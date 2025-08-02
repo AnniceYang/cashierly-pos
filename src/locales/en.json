@@ -1,11 +1,16 @@
 {
-  "title": "Cashierly POS System",
-  "slogan": "Modern and efficient cashier platform",
+  "title": "Cashierly POS",
+  "slogan": "Simple and efficient POS system",
   "username": "Username",
   "password": "Password",
   "login": "Login",
+  "register": "Register",
+  "forgotPassword": "Forgot Password",
+  "resetPassword": "Reset Password",
+  "registerTitle": "Create an Account",
+  "forgotPasswordTitle": "Reset Password",
+  "confirmPassword": "Confirm Password",
+  "backToLogin": "Back to Login",
   "requiredUser": "Please input username",
-  "requiredPass": "Please input password",
-  "welcome": "Welcome to the dashboard",
-  "dashboardDesc": "This is the system homepage"
+  "requiredPass": "Please input password"
 }

@@ -1,11 +1,16 @@
 {
-  "title": "Cashierly 收银系统",
-  "slogan": "现代化收银平台，简单高效",
+  "title": "Cashierly POS",
+  "slogan": "简单高效的收银系统",
   "username": "用户名",
   "password": "密码",
   "login": "登录",
+  "register": "注册",
+  "forgotPassword": "忘记密码",
+  "resetPassword": "重置密码",
+  "registerTitle": "创建账号",
+  "forgotPasswordTitle": "重置密码",
+  "confirmPassword": "确认密码",
+  "backToLogin": "返回登录",
   "requiredUser": "请输入用户名",
-  "requiredPass": "请输入密码",
-  "welcome": "欢迎来到仪表盘",
-  "dashboardDesc": "这里是系统首页"
+  "requiredPass": "请输入密码"
 }

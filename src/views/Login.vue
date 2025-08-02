@@ -1,47 +1,42 @@
 <template>
-  <div class="login-wrapper">
-    <!-- 左侧介绍 -->
-    <div class="left-panel">
-      <h1>{{ t("title") }}</h1>
-      <p>{{ t("slogan") }}</p>
-      <div class="lang-switch">
-        <el-button size="small" @click="setLang('zh')">中文</el-button>
-        <el-button size="small" @click="setLang('en')">English</el-button>
-      </div>
-    </div>
+  <AuthLayout>
+    <el-card class="login-card">
+      <el-form :model="form" :rules="rules" ref="formRef" label-position="top">
+        <el-form-item :label="t('username')" prop="username">
+          <el-input v-model="form.username"></el-input>
+        </el-form-item>
+        <el-form-item :label="t('password')" prop="password">
+          <el-input type="password" v-model="form.password"></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button
+            type="primary"
+            style="width: 100%"
+            :loading="loading"
+            @click="submitForm"
+          >
+            {{ t("login") }}
+          </el-button>
+        </el-form-item>
+      </el-form>
 
-    <!-- 右侧登录卡片 -->
-    <div class="right-panel">
-      <el-card class="login-card">
-        <el-form
-          :model="form"
-          :rules="rules"
-          ref="formRef"
-          label-position="top"
-        >
-          <el-form-item :label="t('username')" prop="username">
-            <el-input v-model="form.username"></el-input>
-          </el-form-item>
-          <el-form-item :label="t('password')" prop="password">
-            <el-input type="password" v-model="form.password"></el-input>
-          </el-form-item>
-          <el-form-item>
-            <el-button type="primary" style="width: 100%" @click="submitForm">{{
-              t("login")
-            }}</el-button>
-          </el-form-item>
-        </el-form>
-      </el-card>
-    </div>
-  </div>
+      <div class="links">
+        <a @click="mockForgotPassword">{{ t("forgotPassword") }}</a>
+        <a @click="mockRegister">{{ t("register") }}</a>
+      </div>
+    </el-card>
+  </AuthLayout>
 </template>
 
 <script setup>
-import { reactive, ref } from "vue";
+import { reactive, ref, computed } from "vue";
 import { useI18n } from "vue-i18n";
 import { useRouter } from "vue-router";
+import axios from "axios";
+import { ElMessage } from "element-plus";
+import AuthLayout from "@/components/AuthLayout.vue";
 
-const { t, locale } = useI18n();
+const { t } = useI18n();
 const router = useRouter();
 
 const form = reactive({
@@ -49,61 +44,59 @@ const form = reactive({
   password: "",
 });
 
+const loading = ref(false);
 const formRef = ref();
 
-const rules = {
+const rules = computed(() => ({
   username: [{ required: true, message: t("requiredUser"), trigger: "blur" }],
   password: [{ required: true, message: t("requiredPass"), trigger: "blur" }],
-};
-
-function setLang(lang) {
-  locale.value = lang;
-}
+}));
 
 function submitForm() {
-  formRef.value.validate((valid) => {
+  formRef.value.validate(async (valid) => {
     if (valid) {
-      alert("登录成功");
-      router.push("/dashboard");
+      loading.value = true;
+      try {
+        const res = await axios.post("/api/login", {
+          username: form.username,
+          password: form.password,
+        });
+
+        if (res.data.code === 200) {
+          localStorage.setItem("token", res.data.data.token);
+          ElMessage.success(t("loginSuccess"));
+          router.push("/dashboard");
+        } else {
+          ElMessage.error(t("loginFail"));
+        }
+      } catch (err) {
+        ElMessage.error(t("networkError"));
+      } finally {
+        loading.value = false;
+      }
     }
   });
+}
+
+function mockRegister() {
+  router.push("/register");
+}
+
+function mockForgotPassword() {
+  router.push("/forgot-password");
 }
 </script>
 
 <style scoped>
-.login-wrapper {
+.links {
   display: flex;
-  height: 100vh;
+  justify-content: space-between;
+  margin-top: 10px;
+  font-size: 14px;
 }
-.left-panel {
-  flex: 1;
-  background: linear-gradient(135deg, #ffdee9, #b5fffc);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  color: #333;
-}
-.left-panel h1 {
-  font-size: 32px;
-  font-weight: bold;
-}
-.left-panel p {
-  font-size: 18px;
-  margin: 10px 0 20px;
-}
-.lang-switch {
-  display: flex;
-  gap: 10px;
-}
-.right-panel {
-  flex: 1;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: #f9fafb;
-}
-.login-card {
-  width: 360px;
+.links a {
+  color: #409eff;
+  cursor: pointer;
+  text-decoration: none;
 }
 </style>
