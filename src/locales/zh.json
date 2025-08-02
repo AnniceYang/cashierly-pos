@@ -1,0 +1,11 @@
+{
+  "title": "Cashierly 收银系统",
+  "slogan": "现代化收银平台，简单高效",
+  "username": "用户名",
+  "password": "密码",
+  "login": "登录",
+  "requiredUser": "请输入用户名",
+  "requiredPass": "请输入密码",
+  "welcome": "欢迎来到仪表盘",
+  "dashboardDesc": "这里是系统首页"
+}

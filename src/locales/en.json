@@ -1,0 +1,11 @@
+{
+  "title": "Cashierly POS System",
+  "slogan": "Modern and efficient cashier platform",
+  "username": "Username",
+  "password": "Password",
+  "login": "Login",
+  "requiredUser": "Please input username",
+  "requiredPass": "Please input password",
+  "welcome": "Welcome to the dashboard",
+  "dashboardDesc": "This is the system homepage"
+}
