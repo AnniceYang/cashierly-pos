@@ -7,10 +7,43 @@
   "register": "Register",
   "forgotPassword": "Forgot Password",
   "resetPassword": "Reset Password",
-  "registerTitle": "Create an Account",
+  "registerTitle": "Create Account",
   "forgotPasswordTitle": "Reset Password",
   "confirmPassword": "Confirm Password",
   "backToLogin": "Back to Login",
-  "requiredUser": "Please input username",
-  "requiredPass": "Please input password"
+  "requiredUser": "Please enter username",
+  "requiredPass": "Please enter password",
+
+  "loginSuccess": "Login successful, redirecting...",
+  "loginFail": "Invalid username or password",
+  "networkError": "Network error, please try again later",
+
+  "dashboard": {
+    "title": "Dashboard",
+    "welcome": "Welcome back, here’s today’s overview:",
+    "sales": "Sales Today",
+    "orders": "Orders Today",
+    "customers": "Active Customers",
+    "recentOrders": "Recent Orders",
+    "table": {
+      "id": "ID",
+      "customer": "Customer",
+      "total": "Total",
+      "status": "Status"
+    }
+  },
+  "menu": {
+    "dashboard": "Dashboard",
+    "orders": "Orders",
+    "products": "Products",
+    "customers": "Customers",
+    "settings": "Settings"
+  },
+  "topbar": {
+    "profile": "Profile",
+    "logout": "Logout",
+    "logoutSuccess": "Logged out successfully!",
+    "profileMsg": "This is just a demo.",
+    "searchPlaceholder": "Search..."
+  }
 }

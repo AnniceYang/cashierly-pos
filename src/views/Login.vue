@@ -57,6 +57,9 @@ function submitForm() {
     if (valid) {
       loading.value = true;
       try {
+        // 模拟 800ms 延迟，显得真实
+        await new Promise((resolve) => setTimeout(resolve, 800));
+
         const res = await axios.post("/api/login", {
           username: form.username,
           password: form.password,
@@ -65,7 +68,10 @@ function submitForm() {
         if (res.data.code === 200) {
           localStorage.setItem("token", res.data.data.token);
           ElMessage.success(t("loginSuccess"));
-          router.push("/dashboard");
+          // 延迟 500ms 跳转，看起来更顺滑
+          setTimeout(() => {
+            router.push("/dashboard");
+          }, 500);
         } else {
           ElMessage.error(t("loginFail"));
         }
