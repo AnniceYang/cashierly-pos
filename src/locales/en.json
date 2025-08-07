@@ -13,7 +13,6 @@
   "backToLogin": "Back to Login",
   "requiredUser": "Please enter username",
   "requiredPass": "Please enter password",
-
   "loginSuccess": "Login successful, redirecting...",
   "loginFail": "Invalid username or password",
   "networkError": "Network error, please try again later",
@@ -40,11 +39,20 @@
     "conversionRate": "Conversion Rate",
     "avgOrderValue": "Average Order Value",
     "statusTooltip": {
-      "completed": "Order has been completed successfully",
-      "pending": "Order is pending and awaiting processing",
-      "cancelled": "Order has been cancelled"
+      "completed": "Completed",
+      "pending": "Pending",
+      "cancelled": "Cancelled"
     },
-    "tableCaption": "Table showing recent orders with their status"
+    "pagination": {
+      "previous": "Previous",
+      "next": "Next",
+      "pageInfo": "Page {currentPage} of {totalPages}"
+    }
+  },
+  "pagination": {
+    "previous": "Previous",
+    "next": "Next",
+    "pageInfo": "Page {currentPage} of {totalPages}"
   },
   "menu": {
     "dashboard": "Dashboard",
@@ -71,7 +79,10 @@
     "keyword": "Current keyword"
   },
   "common": {
-    "backDashboard": "Back"
+    "backDashboard": "Back",
+    "action": "Action",
+    "view": "View",
+    "update": "Update"
   },
   "charts": {
     "salesLineTitle": "Sales Trend",
@@ -92,7 +103,6 @@
     "customerRegionTitle": "Customer Distribution by Region",
     "salesTrendTitle": "Sales Trend"
   },
-
   "order": {
     "status": {
       "completed": "Completed",

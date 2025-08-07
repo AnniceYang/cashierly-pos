@@ -53,17 +53,17 @@
 
       <!-- 用户头像下拉 -->
       <el-dropdown @command="handleCommand">
-        <span class="avatar-dropdown" tabindex="0" aria-haspopup="true">
-          <div class="avatar">👤</div>
-        </span>
+        <template #default>
+          <div class="avatar" tabindex="0" aria-haspopup="true">👤</div>
+        </template>
         <template #dropdown>
           <el-dropdown-menu>
-            <el-dropdown-item command="profile">
-              {{ t("topbar.profile") }}
-            </el-dropdown-item>
-            <el-dropdown-item divided command="logout">
-              {{ t("topbar.logout") }}
-            </el-dropdown-item>
+            <el-dropdown-item command="profile">{{
+              t("topbar.profile")
+            }}</el-dropdown-item>
+            <el-dropdown-item divided command="logout">{{
+              t("topbar.logout")
+            }}</el-dropdown-item>
           </el-dropdown-menu>
         </template>
       </el-dropdown>
@@ -92,7 +92,6 @@
         </el-input>
       </div>
     </el-dialog>
-    ``
   </div>
 </template>
 
@@ -229,6 +228,7 @@ function handleSearchInMobile() {
   justify-content: center;
   cursor: pointer;
 }
+
 .dark .avatar {
   background: #444;
   color: #fff;

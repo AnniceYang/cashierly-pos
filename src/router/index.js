@@ -3,6 +3,11 @@ import Login from "@/views/Login.vue";
 import Dashboard from "@/views/Dashboard.vue";
 import Register from "@/views/Register.vue";
 import ForgotPassword from "@/views/ForgotPassword.vue";
+import Orders from "@/views/Orders.vue";
+import Products from "@/views/Products.vue";
+import Customers from "@/views/Customers.vue";
+import Settings from "@/views/Settings.vue";
+import Search from "@/views/Search.vue";
 
 const routes = [
   {
@@ -32,7 +37,27 @@ const routes = [
   {
     path: "/search",
     name: "Search",
-    component: () => import("@/views/Search.vue"),
+    component: Search,
+  },
+  {
+    path: "/orders",
+    name: "Orders",
+    component: Orders,
+  },
+  {
+    path: "/products",
+    name: "Products",
+    component: Products,
+  },
+  {
+    path: "/customers",
+    name: "Customers",
+    component: Customers,
+  },
+  {
+    path: "/settings",
+    name: "Settings",
+    component: Settings,
   },
 ];
 

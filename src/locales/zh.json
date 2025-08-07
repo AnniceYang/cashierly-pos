@@ -1,26 +1,25 @@
 {
   "title": "Cashierly POS",
-  "slogan": "简单高效的收银系统",
+  "slogan": "简单高效的 POS 系统",
   "username": "用户名",
   "password": "密码",
   "login": "登录",
   "register": "注册",
   "forgotPassword": "忘记密码",
   "resetPassword": "重置密码",
-  "registerTitle": "创建账号",
+  "registerTitle": "创建账户",
   "forgotPasswordTitle": "重置密码",
   "confirmPassword": "确认密码",
   "backToLogin": "返回登录",
   "requiredUser": "请输入用户名",
   "requiredPass": "请输入密码",
-
-  "loginSuccess": "登录成功，正在跳转...",
-  "loginFail": "用户名或密码错误",
-  "networkError": "网络异常，请稍后重试",
+  "loginSuccess": "登录成功，正在重定向...",
+  "loginFail": "用户名或密码无效",
+  "networkError": "网络错误，请稍后再试",
 
   "dashboard": {
-    "title": "控制台",
-    "welcome": "欢迎回来，今日概览如下：",
+    "title": "仪表盘",
+    "welcome": "欢迎回来，以下是今日概览：",
     "sales": "今日销售额",
     "orders": "今日订单数",
     "customers": "活跃客户",
@@ -29,7 +28,7 @@
       "id": "ID",
       "customer": "客户",
       "total": "总金额",
-      "status": "订单状态"
+      "status": "状态"
     },
     "exportCSV": "导出 CSV",
     "backToTop": "返回顶部",
@@ -38,48 +37,60 @@
     "completion": "完成",
     "export": "导出",
     "conversionRate": "转化率",
-    "avgOrderValue": "平均订单金额",
+    "avgOrderValue": "平均订单值",
     "statusTooltip": {
-      "completed": "订单已成功完成",
-      "pending": "订单待处理，正在等待中",
-      "cancelled": "订单已取消"
+      "completed": "已完成",
+      "pending": "待处理",
+      "cancelled": "已取消"
     },
-    "tableCaption": "显示最近订单及其状态的表格"
+    "pagination": {
+      "previous": "上一页",
+      "next": "下一页",
+      "pageInfo": "第 {currentPage} 页，共 {totalPages} 页"
+    }
+  },
+  "pagination": {
+    "previous": "上一页",
+    "next": "下一页",
+    "pageInfo": "第 {currentPage} 页，共 {totalPages} 页"
   },
   "menu": {
-    "dashboard": "控制台",
+    "dashboard": "仪表盘",
     "orders": "订单",
     "products": "产品",
     "customers": "客户",
     "settings": "设置"
   },
   "topbar": {
-    "logout": "退出登录",
-    "logoutTitle": "确认退出",
-    "confirmLogout": "确定要退出登录吗？",
+    "logout": "登出",
+    "logoutTitle": "确认登出",
+    "confirmLogout": "确定要登出吗？",
     "confirm": "确认",
     "cancel": "取消",
-    "logoutSuccess": "退出成功！",
-    "cancelLogout": "已取消退出",
-    "profile": "个人中心",
-    "profileMsg": "暂未开通个人中心~",
+    "logoutSuccess": "登出成功！",
+    "cancelLogout": "取消登出",
+    "profile": "个人资料",
+    "profileMsg": "个人资料尚未完善~",
     "searchPlaceholder": "请输入关键词..."
   },
   "search": {
     "resultTitle": "搜索结果",
-    "noKeyword": "未输入关键词。",
-    "keyword": "当前搜索关键词"
+    "noKeyword": "没有输入关键词。",
+    "keyword": "当前关键词"
   },
   "common": {
-    "backDashboard": "返回"
+    "backDashboard": "返回",
+    "action": "操作",
+    "view": "查看",
+    "update": "更新"
   },
   "charts": {
     "salesLineTitle": "销售趋势",
-    "ordersBarTitle": "每月订单数",
-    "customerLineTitle": "每周活跃用户",
+    "ordersBarTitle": "月度订单",
+    "customerLineTitle": "每周活跃客户",
     "orderStatusPieTitle": "订单状态分布",
-    "monthlyRevenueTitle": "每月收入",
-    "topProductsTitle": "热销产品前五",
+    "monthlyRevenueTitle": "月度收入",
+    "topProductsTitle": "前五大产品",
     "revenue": "收入",
     "sales": "销售额",
     "orders": "订单数",
@@ -89,14 +100,13 @@
       "month": "月",
       "year": "年"
     },
-    "customerRegionTitle": "客户分布区域",
+    "customerRegionTitle": "客户按地区分布",
     "salesTrendTitle": "销售趋势"
   },
-
   "order": {
     "status": {
       "completed": "已完成",
-      "pending": "等待中",
+      "pending": "待处理",
       "cancelled": "已取消"
     }
   }
