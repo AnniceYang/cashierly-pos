@@ -29,6 +29,11 @@ const routes = [
     name: "Dashboard",
     component: Dashboard,
   },
+  {
+    path: "/search",
+    name: "Search",
+    component: () => import("@/views/Search.vue"),
+  },
 ];
 
 const router = createRouter({

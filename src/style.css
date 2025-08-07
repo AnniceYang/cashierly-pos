@@ -38,26 +38,73 @@ html {
   background: transparent;
 }
 
-/* === 全局字体与颜色 === */
+/* style.css 全局样式 */
 :root {
+  /* 你原来的基础色 */
   --font-sans: "Inter", "Helvetica Neue", Arial, "PingFang SC",
     "Microsoft YaHei", sans-serif;
+
   --color-text: #1f2937;
   --color-bg: #ffffff;
   --color-link: #2563eb;
+  --color-border: #e5e7eb;
+  --color-shadow: rgba(0, 0, 0, 0.06);
+
+  /* 新增强调色和状态色 */
+  --color-primary: #2563eb;
+  --color-primary-hover: #1e40af;
+  --color-success: #10b981;
+  --color-warning: #f59e0b;
+  --color-error: #ef4444;
+  --color-card-bg: #ffffff; /* 卡片背景色 */
+}
+
+.dark {
+  --color-text: #cfcfd4;
+  --color-bg: #1e1e2f;
+  --color-link: #7aa9ff;
+  --color-border: #44475a;
+  --color-shadow: rgba(0, 0, 0, 0.5);
+
+  /* 适配暗黑模式的强调色和状态色 */
+  --color-primary: #7aa9ff;
+  --color-primary-hover: #5a82e6;
+  --color-success: #34d399;
+  --color-warning: #fbbf24;
+  --color-error: #f87171;
+  --color-card-bg: #2a2a3d;
 }
 
 body {
   font-family: var(--font-sans);
   font-size: 16px;
   color: var(--color-text);
-  background-color: inherit; /* 继承父元素背景，避免覆盖 */
+  background-color: var(--color-bg);
   line-height: 1.5;
-
-  /* 重点：保证 body 自己没有 margin/padding */
   margin: 0 !important;
   padding: 0 !important;
 }
+
+.stat-card {
+  background: var(--color-bg);
+  box-shadow: 0 2px 8px var(--color-shadow);
+  border: 1px solid var(--color-border);
+  transition: transform 0.2s ease;
+}
+
+.orders-table th,
+.orders-table td {
+  border: 1px solid var(--color-border);
+  padding: 12px;
+}
+
+.orders-table th {
+  background-color: var(--color-bg);
+  text-align: left;
+  font-weight: 500;
+}
+
+/* 你其他样式不用动 */
 
 /* 链接统一样式 */
 a {

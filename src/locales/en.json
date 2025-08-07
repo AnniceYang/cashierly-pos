@@ -30,7 +30,21 @@
       "customer": "Customer",
       "total": "Total",
       "status": "Status"
-    }
+    },
+    "exportCSV": "Export CSV",
+    "backToTop": "Back to Top",
+    "orderCompletionRate": "Order Completion Rate",
+    "completionRateLabel": "Completion Rate",
+    "completion": "Completion",
+    "export": "Export",
+    "conversionRate": "Conversion Rate",
+    "avgOrderValue": "Average Order Value",
+    "statusTooltip": {
+      "completed": "Order has been completed successfully",
+      "pending": "Order is pending and awaiting processing",
+      "cancelled": "Order has been cancelled"
+    },
+    "tableCaption": "Table showing recent orders with their status"
   },
   "menu": {
     "dashboard": "Dashboard",
@@ -40,10 +54,50 @@
     "settings": "Settings"
   },
   "topbar": {
-    "profile": "Profile",
     "logout": "Logout",
-    "logoutSuccess": "Logged out successfully!",
-    "profileMsg": "This is just a demo.",
-    "searchPlaceholder": "Search..."
+    "logoutTitle": "Confirm Logout",
+    "confirmLogout": "Are you sure you want to log out?",
+    "confirm": "Confirm",
+    "cancel": "Cancel",
+    "logoutSuccess": "Successfully logged out!",
+    "cancelLogout": "Logout cancelled",
+    "profile": "Profile",
+    "profileMsg": "Profile is not available yet~",
+    "searchPlaceholder": "Please enter keywords..."
+  },
+  "search": {
+    "resultTitle": "Search Results",
+    "noKeyword": "No keyword entered.",
+    "keyword": "Current keyword"
+  },
+  "common": {
+    "backDashboard": "Back"
+  },
+  "charts": {
+    "salesLineTitle": "Sales Trend",
+    "ordersBarTitle": "Monthly Orders",
+    "customerLineTitle": "Weekly Active Customers",
+    "orderStatusPieTitle": "Order Status Distribution",
+    "monthlyRevenueTitle": "Monthly Revenue",
+    "topProductsTitle": "Top 5 Products",
+    "revenue": "Revenue",
+    "sales": "Sales",
+    "orders": "Orders",
+    "customers": "Customers",
+    "salesRange": {
+      "day": "Day",
+      "month": "Month",
+      "year": "Year"
+    },
+    "customerRegionTitle": "Customer Distribution by Region",
+    "salesTrendTitle": "Sales Trend"
+  },
+
+  "order": {
+    "status": {
+      "completed": "Completed",
+      "pending": "Pending",
+      "cancelled": "Cancelled"
+    }
   }
 }

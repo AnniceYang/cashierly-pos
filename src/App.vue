@@ -4,6 +4,10 @@
 
 <script setup>
 import { onMounted } from "vue";
+import { ref, provide } from "vue";
+
+const isDark = ref(false);
+provide("isDark", isDark);
 
 onMounted(() => {
   document.body.style.margin = "0";

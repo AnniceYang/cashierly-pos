@@ -1,17 +1,30 @@
 <template>
-  <div class="sidebar">
-    <h2 class="logo">Cashierly</h2>
-    <ul class="menu">
-      <li
-        v-for="item in menu"
-        :key="item.key"
-        :class="{ active: activeKey === item.key }"
-        @click="handleClick(item.key)"
-      >
-        <!-- 如果用 Vue Router，可以改成 router-link -->
-        <a href="#" @click.prevent>{{ t(item.label) }}</a>
-      </li>
-    </ul>
+  <div>
+    <!-- 手机端显示的汉堡按钮 -->
+    <button class="hamburger" @click="toggleSidebar" aria-label="Toggle Menu">
+      &#9776;
+    </button>
+
+    <!-- 侧边栏 -->
+    <div :class="['sidebar', { open: sidebarOpen }]">
+      <h2 class="logo">Cashierly</h2>
+      <ul class="menu">
+        <li
+          v-for="item in menu"
+          :key="item.key"
+          :class="{ active: activeKey === item.key }"
+          @click="handleClick(item.key)"
+        >
+          <a href="#" @click.prevent>
+            <span class="menu-icon">📌</span>
+            {{ t(item.label) }}
+          </a>
+        </li>
+      </ul>
+    </div>
+
+    <!-- 遮罩层，点击遮罩关闭侧边栏 -->
+    <div v-if="sidebarOpen" class="overlay" @click="toggleSidebar"></div>
   </div>
 </template>
 
@@ -21,6 +34,7 @@ import { useI18n } from "vue-i18n";
 
 const { t } = useI18n();
 const activeKey = ref("dashboard");
+const sidebarOpen = ref(false);
 
 const menu = [
   { key: "dashboard", label: "menu.dashboard" },
@@ -32,7 +46,11 @@ const menu = [
 
 function handleClick(key) {
   activeKey.value = key;
-  // TODO: 这里可以做页面跳转逻辑，比如使用 router.push 或其他
+  sidebarOpen.value = false; // 点击菜单项后自动关闭侧边栏（手机端）
+}
+
+function toggleSidebar() {
+  sidebarOpen.value = !sidebarOpen.value;
 }
 </script>
 
@@ -46,8 +64,13 @@ function handleClick(key) {
   box-shadow: 2px 0 6px rgba(0, 0, 0, 0.2);
   display: flex;
   flex-direction: column;
-  margin: 0; /* 确保无边距 */
+  margin: 0;
   user-select: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  transition: transform 0.3s ease;
+  z-index: 1000;
 }
 
 .logo {
@@ -88,7 +111,64 @@ function handleClick(key) {
 .menu li a {
   color: inherit;
   text-decoration: none;
-  display: block;
+  display: flex;
+  align-items: center;
   width: 100%;
+}
+
+/* 这里加了图标和文字间距 */
+.menu-icon {
+  margin-right: 10px;
+  user-select: none;
+  font-size: 1.2rem;
+}
+
+/* 汉堡按钮 */
+.hamburger {
+  display: none;
+  position: fixed;
+  top: 16px;
+  left: 16px;
+  background: transparent;
+  border: none;
+  color: #ec4899;
+  font-size: 2rem;
+  cursor: pointer;
+  z-index: 1100;
+  user-select: none;
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 900;
+}
+
+@media (max-width: 768px) {
+  .hamburger {
+    display: block;
+  }
+  .sidebar {
+    transform: translateX(-100%);
+  }
+  .sidebar.open {
+    transform: translateX(0);
+  }
+}
+
+@media (min-width: 769px) {
+  .sidebar {
+    position: relative;
+    transform: none !important;
+    height: 100vh;
+  }
+  .overlay,
+  .hamburger {
+    display: none !important;
+  }
 }
 </style>
