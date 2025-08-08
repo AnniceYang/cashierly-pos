@@ -1,23 +1,19 @@
 <template>
   <div>
-    <!-- 手机端显示的汉堡按钮 -->
+    <!-- 优化后的汉堡按钮 -->
     <button class="hamburger" @click="toggleSidebar" aria-label="Toggle Menu">
-      &#9776;
+      <span class="hamburger-bar"></span>
+      <span class="hamburger-bar"></span>
+      <span class="hamburger-bar"></span>
     </button>
 
     <!-- 侧边栏 -->
     <div :class="['sidebar', { open: sidebarOpen }]">
       <div class="sidebar-header">
         <h2 class="logo">Cashierly</h2>
-
-        <ul v-if="userMenuOpen" class="dropdown-menu" @mousedown.prevent>
-          <li><a href="#" @click.prevent>Profile</a></li>
-          <li><a href="#" @click.prevent>Settings</a></li>
-          <li><a href="#" @click.prevent>Logout</a></li>
-        </ul>
+        <p class="slogan">{{ t("slogan") }}</p>
       </div>
-
-      <!-- ✅ 菜单应该放在 sidebar 内部 -->
+      <!-- 菜单 -->
       <ul class="menu">
         <li
           v-for="item in menu"
@@ -25,9 +21,9 @@
           :class="{ active: activeKey === item.key }"
           @click="handleClick(item)"
         >
-          <a href="#" @click.prevent>
+          <a href="#" @click.prevent class="menu-item">
             <component :is="item.icon" class="menu-icon" />
-            {{ t(item.label) }}
+            <span class="menu-label">{{ t(item.label) }}</span>
           </a>
         </li>
       </ul>
@@ -39,9 +35,9 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
-import { useRouter } from "vue-router";
+import { useRouter, useRoute } from "vue-router";
 import {
   LayoutDashboard,
   ShoppingCart,
@@ -52,6 +48,7 @@ import {
 
 const { t } = useI18n();
 const router = useRouter();
+const route = useRoute();
 
 const activeKey = ref("");
 const sidebarOpen = ref(false);
@@ -89,6 +86,12 @@ const setActiveKey = () => {
   }
 };
 
+// 初始化时设置 activeKey
+setActiveKey();
+
+// 监听路由变化
+watch(() => route.path, setActiveKey);
+
 function handleClick(item) {
   activeKey.value = item.key;
   sidebarOpen.value = false;
@@ -106,169 +109,122 @@ function toggleUserMenu() {
 </script>
 
 <style scoped>
-/* 基础侧边栏样式，桌面端保持原样 */
+/* 基础侧边栏样式 - 保持原有颜色 */
 .sidebar {
-  width: 220px;
+  width: 240px; /* 稍微加宽 */
   background-color: #111827;
   color: white;
-  padding: 24px;
+  padding: 20px 0; /* 修改为上下padding */
   height: 100vh;
   box-shadow: 2px 0 6px rgba(0, 0, 0, 0.2);
   display: flex;
   flex-direction: column;
-  margin: 0;
-  user-select: none;
-  position: fixed; /* 方便手机端动画 */
+  position: fixed;
   top: 0;
   left: 0;
   transition: transform 0.3s ease;
   z-index: 1000;
 }
 
-/* logo 和头像部分 */
+/* logo 部分 - 增加间距 */
 .sidebar-header {
-  margin-bottom: 24px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  user-select: none;
+  padding: 0 24px 20px 24px;
+  margin-bottom: 12px;
+  border-bottom: 1px solid #2d3748;
 }
 
-/* logo */
 .logo {
   font-size: 1.6rem;
   font-weight: bold;
   color: #ec4899;
+  margin: 0;
+  padding: 12px 0 4px 0; /* 调整垂直padding */
 }
 
-/* 用户菜单 */
-.user-menu {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  cursor: pointer;
-  position: relative;
-  outline: none;
-  user-select: none;
+.slogan {
+  font-size: 0.75rem;
+  color: #94a3b8;
+  margin: 4px 0 0 0;
+  font-weight: 400;
+  opacity: 0.9;
 }
 
-.user-menu:focus-visible {
-  outline: 2px solid #ec4899;
-  outline-offset: 2px;
-}
-
-.avatar {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  border: 2px solid #ec4899;
-}
-
-.username {
-  font-weight: 600;
-  color: #ec4899;
-  user-select: text;
-  white-space: nowrap;
-}
-
-/* 下拉箭头 */
-.arrow {
-  color: #ec4899;
-  transition: transform 0.3s;
-  user-select: none;
-}
-
-/* 下拉菜单 */
-.dropdown-menu {
-  position: absolute;
-  top: 48px;
-  left: 0;
-  background-color: #1f2937;
-  border-radius: 6px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-  min-width: 140px;
-  padding: 8px 0;
-  z-index: 1100;
-  user-select: none;
-}
-
-.dropdown-menu li {
-  list-style: none;
-}
-
-.dropdown-menu li a {
-  display: block;
-  padding: 8px 16px;
-  color: #eee;
-  text-decoration: none;
-  font-size: 0.9rem;
-  transition: background-color 0.2s;
-}
-
-.dropdown-menu li a:hover {
-  background-color: #ec4899;
-  color: white;
-  border-radius: 4px;
-}
-
-/* 菜单 */
+/* 菜单项优化 */
 .menu {
   list-style: none;
-  padding: 0;
+  padding: 0 16px; /* 两侧内边距 */
   margin: 0;
   flex-grow: 1;
 }
 
 .menu li {
-  font-size: 1rem;
-  padding: 12px 16px;
-  cursor: pointer;
-  border-radius: 6px;
-  transition: background-color 0.2s, color 0.2s;
-  user-select: none;
+  margin-bottom: 4px; /* 增加菜单项间距 */
+}
+
+.menu-item {
   display: flex;
   align-items: center;
+  padding: 12px 16px;
+  color: #e2e8f0;
+  text-decoration: none;
+  border-radius: 6px;
+  transition: all 0.2s ease;
 }
 
-/* 图标和文字间距 */
 .menu-icon {
-  margin-right: 10px;
+  margin-right: 12px;
   font-size: 1.2rem;
-  user-select: none;
+  width: 24px;
+  text-align: center;
+  color: #94a3b8;
 }
 
-.menu li:hover {
+.menu-label {
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+.menu li:hover .menu-item {
   background-color: #2d3748;
   color: #ec4899;
 }
 
-.menu li.active {
+.menu li:hover .menu-icon {
+  color: #ec4899;
+}
+
+.menu li.active .menu-item {
   background-color: #ec4899;
   color: white;
-  font-weight: 600;
 }
 
-.menu li a {
-  color: inherit;
-  text-decoration: none;
-  display: flex;
-  align-items: center;
-  width: 100%;
+.menu li.active .menu-icon {
+  color: white;
 }
 
-/* 汉堡按钮 - 手机端显示，桌面端隐藏 */
+/* 优化汉堡按钮 */
 .hamburger {
   display: none;
   position: fixed;
-  top: 16px;
-  left: 16px;
+  top: 20px;
+  left: 20px;
   background: transparent;
   border: none;
-  color: #ec4899;
-  font-size: 2rem;
+  padding: 8px;
   cursor: pointer;
   z-index: 1100;
-  user-select: none;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 24px;
+  width: 30px;
+}
+
+.hamburger-bar {
+  display: block;
+  height: 2px;
+  width: 100%;
+  background-color: #ec4899;
+  transition: all 0.3s ease;
 }
 
 .hamburger:focus-visible {
@@ -276,7 +232,7 @@ function toggleUserMenu() {
   outline-offset: 2px;
 }
 
-/* 遮罩层，点击关闭侧边栏 */
+/* 遮罩层优化 */
 .overlay {
   position: fixed;
   top: 0;
@@ -285,37 +241,41 @@ function toggleUserMenu() {
   height: 100vh;
   background-color: rgba(0, 0, 0, 0.5);
   z-index: 900;
+  backdrop-filter: blur(2px); /* 添加模糊效果 */
 }
 
-/* 手机端样式 */
+/* 手机端样式优化 */
 @media (max-width: 768px) {
-  /* 显示汉堡按钮 */
-  .hamburger {
-    display: block;
-  }
-
-  /* 侧边栏默认隐藏，左移出屏幕 */
   .sidebar {
-    width: 220px;
-    height: 100vh;
     transform: translateX(-100%);
+    position: fixed;
+    z-index: 1000;
   }
 
-  /* 侧边栏打开状态，平移回来 */
   .sidebar.open {
     transform: translateX(0);
   }
+
+  .hamburger {
+    display: flex;
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 1100;
+  }
+
+  .overlay {
+    display: block;
+  }
 }
 
-/* 桌面端正常展示 */
+/* 桌面端样式 */
 @media (min-width: 769px) {
   .sidebar {
     position: relative;
     transform: none !important;
-    height: 100vh;
   }
 
-  /* 隐藏遮罩和汉堡按钮 */
   .overlay,
   .hamburger {
     display: none !important;

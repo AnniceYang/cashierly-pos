@@ -15,9 +15,9 @@
   "requiredPass": "Please enter password",
   "loginSuccess": "Login successful, redirecting...",
   "loginFail": "Invalid username or password",
-  "networkError": "Network error, please try again later",
 
   "dashboard": {
+    "orderManagement": "Order Management",
     "title": "Dashboard",
     "welcome": "Welcome back, here’s today’s overview:",
     "sales": "Sales Today",
@@ -26,7 +26,9 @@
     "recentOrders": "Recent Orders",
     "table": {
       "id": "ID",
+      "date": "Date",
       "customer": "Customer",
+      "items": "Items",
       "total": "Total",
       "status": "Status"
     },
@@ -82,7 +84,8 @@
     "backDashboard": "Back",
     "action": "Action",
     "view": "View",
-    "update": "Update"
+    "update": "Update",
+    "notes": "Notes"
   },
   "charts": {
     "salesLineTitle": "Sales Trend",

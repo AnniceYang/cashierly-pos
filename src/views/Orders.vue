@@ -10,7 +10,7 @@
       <Topbar />
 
       <div class="dashboard-content">
-        <h1 class="dashboard-title">{{ t("dashboard.orders") }}</h1>
+        <h1 class="dashboard-title">{{ t("dashboard.orderManagement") }}</h1>
 
         <section aria-label="Order management" class="orders-section">
           <!-- 搜索框 -->
@@ -18,7 +18,7 @@
             <input
               v-model="searchQuery"
               type="text"
-              placeholder="Search by customer..."
+              placeholder="Search by ID/Customer..."
               @input="handleSearch"
               class="search-input"
               aria-label="Search orders"
@@ -52,33 +52,55 @@
             <thead>
               <tr>
                 <th scope="col">{{ t("dashboard.table.id") }}</th>
+                <th scope="col">{{ t("dashboard.table.date") }}</th>
+
                 <th scope="col">{{ t("dashboard.table.customer") }}</th>
+                <th scope="col">{{ t("dashboard.table.items") }}</th>
+
                 <th scope="col">{{ t("dashboard.table.total") }}</th>
                 <th scope="col">{{ t("dashboard.table.status") }}</th>
+                <th scope="col">{{ t("common.notes") }}</th>
+
+                <th scope="col">{{ t("common.action") }}</th>
               </tr>
             </thead>
 
             <tbody>
               <tr v-for="o in filteredOrders" :key="o.id" tabindex="0">
                 <td>{{ o.id }}</td>
+                <td>{{ o.date }}</td>
                 <td>{{ o.customer }}</td>
-                <td>{{ o.total }}</td>
+                <td>{{ o.items }}</td>
+                <td class="total-cell">{{ o.total }}</td>
                 <td>
-                  <span
-                    :class="['status-badge', o.status.toLowerCase()]"
-                    :title="
-                      t('dashboard.statusTooltip.' + o.status.toLowerCase())
-                    "
-                    role="note"
-                    aria-label="Order status: {{ o.status }}"
-                  >
+                  <span :class="['status-badge', o.status.toLowerCase()]">
                     {{ o.status }}
                   </span>
+                </td>
+                <td class="notes-cell">
+                  <span>{{ o.notes || "-" }}</span>
+                </td>
+                <td class="actions-cell">
+                  <button
+                    @click="viewDetails(o)"
+                    class="action-btn"
+                    :title="t('common.view')"
+                  >
+                    <EyeIcon size="16" />
+                    <span class="action-label">{{ t("common.view") }}</span>
+                  </button>
+                  <button
+                    @click="editOrder(o)"
+                    class="action-btn"
+                    :title="t('common.update')"
+                  >
+                    <EditIcon size="16" />
+                    <span class="action-label">{{ t("common.update") }}</span>
+                  </button>
                 </td>
               </tr>
             </tbody>
           </table>
-
           <!-- 分页控件 -->
           <div class="pagination">
             <button
@@ -114,6 +136,12 @@
         >
           ⬆
         </button>
+
+        <OrderDetailModal
+          v-if="selectedOrder"
+          :order="selectedOrder"
+          @close="selectedOrder = null"
+        />
       </div>
     </div>
   </div>
@@ -132,22 +160,51 @@ const filteredOrders = ref([]);
 const searchQuery = ref("");
 const showBackTop = ref(false);
 const currentPage = ref(1);
+const selectedOrder = ref(null);
 const pageSize = 10;
 const totalPages = ref(1);
 
+const viewDetails = (order) => {
+  selectedOrder.value = order;
+};
+
 // 模拟生成订单数据
 const generateOrders = (pageNum, pageSize) => {
-  const orderStatuses = ["Completed", "Pending", "Cancelled"];
-  const ordersList = [];
-  for (let i = 0; i < pageSize; i++) {
-    ordersList.push({
-      id: `ORD-${pageNum * 10 + i}`,
-      customer: `Customer ${pageNum * 10 + i}`,
-      total: `$${(Math.random() * 500).toFixed(2)}`,
-      status: orderStatuses[Math.floor(Math.random() * 3)],
-    });
-  }
-  return ordersList;
+  const statuses = ["Completed", "Processing", "Cancelled"];
+  const customers = [
+    "James Wilson",
+    "Sarah Johnson",
+    "Michael Brown",
+    "Emily Davis",
+    "David Miller",
+    "Sophia Wilson",
+  ];
+  const notes = [
+    "Urgent delivery",
+    "Gift wrapping",
+    "Contact customer",
+    null,
+    null,
+  ];
+
+  return Array.from({ length: pageSize }, (_, i) => ({
+    id: `ORD-${(pageNum - 1) * pageSize + 1000 + i}`,
+    date: new Date(
+      Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000
+    ).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    }),
+    customer: customers[Math.floor(Math.random() * customers.length)],
+    items: Math.floor(Math.random() * 5) + 1,
+    total: (Math.random() * 500 + 10).toLocaleString("en-US", {
+      style: "currency",
+      currency: "USD",
+    }),
+    status: statuses[Math.floor(Math.random() * statuses.length)],
+    notes: notes[Math.floor(Math.random() * notes.length)],
+  }));
 };
 
 // 获取订单数据
@@ -160,8 +217,12 @@ const fetchOrders = () => {
 
 // 搜索订单
 const handleSearch = () => {
-  filteredOrders.value = orders.value.filter((order) =>
-    order.customer.toLowerCase().includes(searchQuery.value.toLowerCase())
+  const query = searchQuery.value.toLowerCase();
+  filteredOrders.value = orders.value.filter(
+    (order) =>
+      order.customer.toLowerCase().includes(query) ||
+      order.id.toLowerCase().includes(query) ||
+      (order.notes && order.notes.toLowerCase().includes(query))
   );
 };
 
@@ -169,15 +230,20 @@ const handleSearch = () => {
 const exportCSV = () => {
   const headers = [
     t("dashboard.table.id"),
+    t("dashboard.table.date"),
     t("dashboard.table.customer"),
     t("dashboard.table.total"),
     t("dashboard.table.status"),
+    t("common.notes"),
   ];
-  const rows = orders.value.map((order) => [
+
+  const rows = allOrders.map((order) => [
     order.id,
+    order.date,
     order.customer,
     order.total,
     order.status,
+    order.notes || "N/A",
   ]);
   const csvContent = [headers, ...rows].map((e) => e.join(",")).join("\n");
   const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
@@ -199,16 +265,17 @@ const changePage = (newPage) => {
 };
 
 // 滚动监听，显示返回顶部按钮
-const onScroll = () => {
+
+const checkScroll = () => {
   const el = document.querySelector(".dashboard-main");
-  showBackTop.value = el.scrollTop > 300;
+  showBackTop.value = el.scrollHeight > el.clientHeight && el.scrollTop > 300;
 };
 
 onMounted(() => {
   fetchOrders();
-  document
-    .querySelector(".dashboard-main")
-    .addEventListener("scroll", onScroll, { passive: true });
+  const mainEl = document.querySelector(".dashboard-main");
+  mainEl.addEventListener("scroll", checkScroll, { passive: true });
+  checkScroll();
 });
 
 // 返回顶部
@@ -364,7 +431,7 @@ const scrollTop = () => {
   pointer-events: none; /* 避免点击时按钮存在 */
 }
 
-.back-to-top.visible {
+.back-to-top[v-show="true"] {
   opacity: 1;
   pointer-events: auto; /* 使按钮可点击 */
 }
@@ -403,5 +470,72 @@ const scrollTop = () => {
   align-items: center;
   font-size: 1rem;
   color: var(--color-text);
+}
+
+/* 新增这些样式，不影响原有样式 */
+.total-cell {
+  font-weight: 600;
+  color: var(--color-text-dark);
+}
+
+.notes-cell {
+  max-width: 150px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.actions-cell {
+  display: flex;
+  gap: 8px;
+}
+
+.action-btn {
+  background: none;
+  border: none;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.action-btn:hover {
+  color: var(--color-primary);
+  background: rgba(37, 99, 235, 0.1);
+}
+
+/* 状态标签优化 */
+.status-badge {
+  font-size: 0.75rem;
+  padding: 4px 8px;
+  border-radius: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.status-badge.completed {
+  background-color: #e6f7ee;
+  color: #00a76f;
+}
+
+.status-badge.processing {
+  background-color: #fff7e6;
+  color: #ff9500;
+}
+
+.status-badge.cancelled {
+  background-color: #ffebee;
+  color: #f44336;
+}
+.action-label {
+  margin-left: 6px;
+  font-size: 0.875rem;
+}
+
+@media (max-width: 768px) {
+  .action-label {
+    display: none;
+  }
 }
 </style>

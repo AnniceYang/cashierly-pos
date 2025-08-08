@@ -18,6 +18,7 @@
   "networkError": "网络错误，请稍后再试",
 
   "dashboard": {
+    "orderManagement": "订单管理",
     "title": "仪表盘",
     "welcome": "欢迎回来，以下是今日概览：",
     "sales": "今日销售额",
@@ -26,7 +27,9 @@
     "recentOrders": "最近订单",
     "table": {
       "id": "ID",
+      "date": "日期",
       "customer": "客户",
+      "items": "物品",
       "total": "总金额",
       "status": "状态"
     },
@@ -82,7 +85,8 @@
     "backDashboard": "返回",
     "action": "操作",
     "view": "查看",
-    "update": "更新"
+    "update": "更新",
+    "notes": "备注"
   },
   "charts": {
     "salesLineTitle": "销售趋势",
