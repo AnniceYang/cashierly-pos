@@ -86,7 +86,9 @@
     "action": "操作",
     "view": "查看",
     "update": "更新",
-    "notes": "备注"
+    "notes": "备注",
+    "orderDetails": "订单详情",
+    "close": "关闭"
   },
   "charts": {
     "salesLineTitle": "销售趋势",

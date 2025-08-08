@@ -8,37 +8,29 @@
       aria-atomic="true"
     >
       <Topbar />
-
       <div class="dashboard-content">
         <h1 class="dashboard-title">{{ t("dashboard.orderManagement") }}</h1>
-
         <section aria-label="Order management" class="orders-section">
           <!-- 搜索框 -->
           <div class="orders-header">
-            <input
-              v-model="searchQuery"
-              type="text"
-              placeholder="Search by ID/Customer..."
-              @input="handleSearch"
-              class="search-input"
-              aria-label="Search orders"
-            />
+            <div class="search-container">
+              <input
+                v-model="searchQuery"
+                type="text"
+                placeholder="Search by ID/Customer..."
+                @input="debouncedSearch"
+                class="search-input"
+                aria-label="Search orders"
+              />
+              <SearchIcon class="search-icon" aria-hidden="true" />
+            </div>
             <button
               class="export-btn"
               @click="exportCSV"
               aria-label="Export orders as CSV"
               title="Export CSV"
             >
-              <svg
-                class="icon"
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-                aria-hidden="true"
-                focusable="false"
-              >
-                <path d="M5,20H19V18H5V20M19,8H14V3H10V8H5L12,15L19,8Z" />
-              </svg>
+              <DownloadIcon size="16" aria-hidden="true" />
               {{ t("dashboard.exportCSV") }}
             </button>
           </div>
@@ -53,18 +45,14 @@
               <tr>
                 <th scope="col">{{ t("dashboard.table.id") }}</th>
                 <th scope="col">{{ t("dashboard.table.date") }}</th>
-
                 <th scope="col">{{ t("dashboard.table.customer") }}</th>
                 <th scope="col">{{ t("dashboard.table.items") }}</th>
-
                 <th scope="col">{{ t("dashboard.table.total") }}</th>
                 <th scope="col">{{ t("dashboard.table.status") }}</th>
                 <th scope="col">{{ t("common.notes") }}</th>
-
                 <th scope="col">{{ t("common.action") }}</th>
               </tr>
             </thead>
-
             <tbody>
               <tr v-for="o in filteredOrders" :key="o.id" tabindex="0">
                 <td>{{ o.id }}</td>
@@ -73,9 +61,9 @@
                 <td>{{ o.items }}</td>
                 <td class="total-cell">{{ o.total }}</td>
                 <td>
-                  <span :class="['status-badge', o.status.toLowerCase()]">
-                    {{ o.status }}
-                  </span>
+                  <span :class="['status-badge', o.status.toLowerCase()]">{{
+                    o.status
+                  }}</span>
                 </td>
                 <td class="notes-cell">
                   <span>{{ o.notes || "-" }}</span>
@@ -85,41 +73,57 @@
                     @click="viewDetails(o)"
                     class="action-btn"
                     :title="t('common.view')"
+                    aria-label="View order details"
                   >
-                    <EyeIcon size="16" />
+                    <EyeIcon size="16" aria-hidden="true" />
                     <span class="action-label">{{ t("common.view") }}</span>
                   </button>
                   <button
                     @click="editOrder(o)"
                     class="action-btn"
                     :title="t('common.update')"
+                    aria-label="Edit order"
                   >
-                    <EditIcon size="16" />
+                    <EditIcon size="16" aria-hidden="true" />
                     <span class="action-label">{{ t("common.update") }}</span>
                   </button>
                 </td>
               </tr>
+              <tr v-if="filteredOrders.length === 0">
+                <td colspan="8" class="no-results">
+                  {{ t("dashboard.noOrdersFound") || "No orders found." }}
+                </td>
+              </tr>
             </tbody>
           </table>
+
           <!-- 分页控件 -->
-          <div class="pagination">
+          <div
+            class="pagination"
+            role="navigation"
+            aria-label="Pagination Navigation"
+          >
             <button
               @click="changePage(currentPage - 1)"
               :disabled="currentPage <= 1"
               class="pagination-btn"
+              aria-label="Previous page"
             >
               {{ t("pagination.previous") }}
             </button>
-            <span class="page-info">{{
-              t("pagination.pageInfo", {
-                currentPage: currentPage,
-                totalPages: totalPages,
-              })
-            }}</span>
+            <span class="page-info" aria-live="polite" aria-atomic="true">
+              {{
+                t("pagination.pageInfo", {
+                  currentPage: currentPage,
+                  totalPages: totalPages,
+                })
+              }}
+            </span>
             <button
               @click="changePage(currentPage + 1)"
               :disabled="currentPage >= totalPages"
               class="pagination-btn"
+              aria-label="Next page"
             >
               {{ t("pagination.next") }}
             </button>
@@ -137,6 +141,7 @@
           ⬆
         </button>
 
+        <!-- 订单详情弹窗 -->
         <OrderDetailModal
           v-if="selectedOrder"
           :order="selectedOrder"
@@ -152,6 +157,15 @@ import { useI18n } from "vue-i18n";
 import { ref, onMounted } from "vue";
 import Sidebar from "@/components/layout/Sidebar.vue";
 import Topbar from "@/components/layout/Topbar.vue";
+import { Eye, Edit, Search, ArrowUp, Download } from "lucide-vue-next";
+import OrderDetailModal from "@/components/modals/OrderDetailModal.vue";
+import { debounce } from "lodash-es"; // 如果没装lodash，可以用自己写防抖函数
+
+const EyeIcon = Eye;
+const EditIcon = Edit;
+const SearchIcon = Search;
+const ArrowUpIcon = ArrowUp;
+const DownloadIcon = Download;
 
 const { t } = useI18n();
 
@@ -168,7 +182,6 @@ const viewDetails = (order) => {
   selectedOrder.value = order;
 };
 
-// 模拟生成订单数据
 const generateOrders = (pageNum, pageSize) => {
   const statuses = ["Completed", "Processing", "Cancelled"];
   const customers = [
@@ -207,16 +220,14 @@ const generateOrders = (pageNum, pageSize) => {
   }));
 };
 
-// 获取订单数据
 const fetchOrders = () => {
   const ordersList = generateOrders(currentPage.value, pageSize);
   orders.value = ordersList;
   filteredOrders.value = orders.value;
-  totalPages.value = Math.ceil(50 / pageSize); // 假设总共50条订单
+  totalPages.value = Math.ceil(50 / pageSize);
 };
 
-// 搜索订单
-const handleSearch = () => {
+const doSearch = () => {
   const query = searchQuery.value.toLowerCase();
   filteredOrders.value = orders.value.filter(
     (order) =>
@@ -226,7 +237,15 @@ const handleSearch = () => {
   );
 };
 
-// 导出CSV
+const debouncedSearch = debounce(doSearch, 300);
+const escapeCSVField = (field) => {
+  if (typeof field === "string" && field.includes(",")) {
+    // 如果字段中有逗号，包双引号，且双引号内的引号需要转义成两个双引号
+    return `"${field.replace(/"/g, '""')}"`;
+  }
+  return field;
+};
+
 const exportCSV = () => {
   const headers = [
     t("dashboard.table.id"),
@@ -237,7 +256,7 @@ const exportCSV = () => {
     t("common.notes"),
   ];
 
-  const rows = allOrders.map((order) => [
+  const rows = filteredOrders.value.map((order) => [
     order.id,
     order.date,
     order.customer,
@@ -245,26 +264,28 @@ const exportCSV = () => {
     order.status,
     order.notes || "N/A",
   ]);
-  const csvContent = [headers, ...rows].map((e) => e.join(",")).join("\n");
+
+  // 对每个字段做转义
+  const csvContent = [headers, ...rows]
+    .map((row) => row.map(escapeCSVField).join(","))
+    .join("\n");
+
   const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
   const url = URL.createObjectURL(blob);
 
   const link = document.createElement("a");
   link.href = url;
-  link.setAttribute("download", "orders.csv");
+  link.setAttribute("download", `orders_page_${currentPage.value}.csv`);
   link.click();
   URL.revokeObjectURL(url);
 };
 
-// 分页控制
 const changePage = (newPage) => {
   if (newPage >= 1 && newPage <= totalPages.value) {
     currentPage.value = newPage;
     fetchOrders();
   }
 };
-
-// 滚动监听，显示返回顶部按钮
 
 const checkScroll = () => {
   const el = document.querySelector(".dashboard-main");
@@ -278,7 +299,6 @@ onMounted(() => {
   checkScroll();
 });
 
-// 返回顶部
 const scrollTop = () => {
   document
     .querySelector(".dashboard-main")
@@ -326,10 +346,10 @@ const scrollTop = () => {
   margin-bottom: 16px;
 }
 
-.orders-header h2 {
-  font-weight: 700;
-  font-size: 1.6rem;
-  color: var(--color-primary);
+.search-container {
+  position: relative;
+  display: flex;
+  align-items: center;
 }
 
 .search-input {
@@ -338,6 +358,15 @@ const scrollTop = () => {
   border: 1px solid var(--color-border);
   width: 250px;
   font-size: 1rem;
+  background-color: var(--color-bg);
+  color: var(--color-text);
+}
+
+.search-icon {
+  position: absolute;
+  right: 12px;
+  color: var(--color-text-secondary);
+  pointer-events: none;
 }
 
 .export-btn {
@@ -354,40 +383,45 @@ const scrollTop = () => {
   font-size: 1rem;
   transition: background-color 0.3s ease;
 }
+
 .export-btn:hover,
 .export-btn:focus-visible {
   background: var(--color-primary-hover);
 }
 
-.export-btn .icon {
-  width: 18px;
-  height: 18px;
-}
-
+/* Orders table */
 .orders-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 1rem;
+  background-color: var(--color-bg);
   color: var(--color-text);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .orders-table th,
 .orders-table td {
-  border: none;
-  padding: 14px 16px;
-  text-align: left;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--color-border);
 }
 
 .orders-table th {
-  background-color: var(--color-bg);
+  background: linear-gradient(to bottom, #f8f8f8, #e1e1e1);
   font-weight: 600;
+  color: var(--color-text-dark);
+  text-align: left;
+  box-shadow: inset 0 1px 0 rgba(0, 0, 0, 0.05);
 }
 
-.orders-table tbody tr:hover,
-.orders-table tbody tr:focus-within {
+.orders-table tbody tr:hover {
   background-color: rgba(37, 99, 235, 0.1);
 }
 
+.orders-table tbody tr:focus-within {
+  background-color: rgba(37, 99, 235, 0.15);
+  outline: none;
+}
+
+/* Status badges */
 .status-badge {
   padding: 6px 14px;
   border-radius: 14px;
@@ -403,45 +437,15 @@ const scrollTop = () => {
   background-color: var(--color-success);
 }
 
-.status-badge.pending {
+.status-badge.processing {
   background-color: var(--color-warning);
-  color: #333;
 }
 
 .status-badge.cancelled {
   background-color: var(--color-error);
 }
 
-/* 返回顶部按钮 */
-.back-to-top {
-  position: fixed;
-  right: 20px;
-  bottom: 20px;
-  width: 44px;
-  height: 44px;
-  font-size: 24px;
-  border: none;
-  border-radius: 50%;
-  background-color: var(--color-primary);
-  color: white;
-  cursor: pointer;
-  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.3);
-  transition: background-color 0.3s ease, transform 0.3s ease, opacity 0.3s ease;
-  opacity: 0; /* 初始为透明 */
-  pointer-events: none; /* 避免点击时按钮存在 */
-}
-
-.back-to-top[v-show="true"] {
-  opacity: 1;
-  pointer-events: auto; /* 使按钮可点击 */
-}
-
-.back-to-top:hover,
-.back-to-top:focus-visible {
-  background-color: var(--color-primary-hover);
-  transform: scale(1.1);
-}
-
+/* Pagination */
 .pagination {
   display: flex;
   justify-content: center;
@@ -465,77 +469,233 @@ const scrollTop = () => {
   background-color: var(--color-primary-hover);
 }
 
-.page-info {
-  display: flex;
-  align-items: center;
-  font-size: 1rem;
-  color: var(--color-text);
+.pagination-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
-/* 新增这些样式，不影响原有样式 */
-.total-cell {
-  font-weight: 600;
-  color: var(--color-text-dark);
+/* Back to top button */
+.back-to-top {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  width: 44px;
+  height: 44px;
+  font-size: 24px;
+  border: none;
+  border-radius: 50%;
+  background-color: var(--color-primary);
+  color: white;
+  cursor: pointer;
+  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.3);
+  transition: background-color 0.3s ease, transform 0.3s ease, opacity 0.3s ease;
+  opacity: 0;
+  pointer-events: none;
 }
 
-.notes-cell {
-  max-width: 150px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+.back-to-top[v-show="true"] {
+  opacity: 1;
+  pointer-events: auto;
 }
 
+.back-to-top:hover {
+  background-color: var(--color-primary-hover);
+  transform: scale(1.1);
+}
+
+/* Actions */
 .actions-cell {
   display: flex;
-  gap: 8px;
+  gap: 12px;
+  flex-wrap: wrap;
 }
 
 .action-btn {
-  background: none;
-  border: none;
-  color: var(--color-text-secondary);
+  background-color: transparent;
+  color: var(--color-text);
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: none; /* 去掉默认边框 */
   cursor: pointer;
-  padding: 4px;
-  border-radius: 4px;
-  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+  min-width: 100px;
+  box-sizing: border-box;
+  outline: none;
 }
 
-.action-btn:hover {
+.action-btn:hover,
+.action-btn:focus-visible {
   color: var(--color-primary);
-  background: rgba(37, 99, 235, 0.1);
+  background-color: rgba(37, 99, 235, 0.1);
+  box-shadow: 0 0 0 2px var(--color-primary);
+  outline: none;
 }
 
-/* 状态标签优化 */
-.status-badge {
-  font-size: 0.75rem;
-  padding: 4px 8px;
-  border-radius: 12px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+.action-btn:disabled {
+  color: var(--color-text-disabled);
+  border-color: transparent;
+  cursor: not-allowed;
+  background-color: transparent;
 }
 
-.status-badge.completed {
-  background-color: #e6f7ee;
-  color: #00a76f;
+/* No results */
+.no-results {
+  text-align: center;
+  font-style: italic;
+  color: var(--color-text-secondary);
+  padding: 16px 0;
 }
 
-.status-badge.processing {
-  background-color: #fff7e6;
-  color: #ff9500;
-}
-
-.status-badge.cancelled {
-  background-color: #ffebee;
-  color: #f44336;
-}
-.action-label {
-  margin-left: 6px;
-  font-size: 0.875rem;
-}
-
+/* Responsive 手机端适配 */
 @media (max-width: 768px) {
-  .action-label {
-    display: none;
+  .orders-header {
+    flex-direction: column;
+    align-items: flex-start;
   }
+
+  .search-input {
+    width: 100%;
+  }
+
+  .export-btn {
+    width: 100%;
+    margin-top: 10px;
+  }
+
+  .orders-table th,
+  .orders-table td {
+    padding: 10px;
+  }
+
+  .pagination {
+    flex-direction: column;
+    align-items: center;
+    margin-top: 10px;
+  }
+
+  .pagination-btn {
+    margin-bottom: 5px;
+  }
+
+  .back-to-top {
+    width: 48px;
+    height: 48px;
+    font-size: 28px;
+    right: 15px;
+    bottom: 15px;
+  }
+
+  .actions-cell {
+    justify-content: space-between;
+    gap: 8px;
+  }
+
+  .action-btn {
+    min-width: auto;
+    flex-grow: 0;
+  }
+}
+
+/* ========== 暗黑模式支持 ========== */
+:root {
+  --color-bg: #fff;
+  --color-text: #222;
+  --color-text-secondary: #666;
+  --color-text-dark: #333;
+  --color-border: #ddd;
+  --color-primary: #2563eb;
+  --color-primary-hover: #1e40af;
+  --color-success: #16a34a;
+  --color-warning: #d97706;
+  --color-error: #dc2626;
+  --color-text-disabled: #aaa;
+}
+
+[data-theme="dark"] {
+  --color-bg: #121212;
+  --color-text: #e0e0e0;
+  --color-text-secondary: #aaa;
+  --color-text-dark: #ddd;
+  --color-border: #444;
+  --color-primary: #3b82f6;
+  --color-primary-hover: #60a5fa;
+  --color-success: #22c55e;
+  --color-warning: #facc15;
+  --color-error: #ef4444;
+  --color-text-disabled: #555;
+}
+
+/* 表头暗黑调整 */
+/* 暗黑模式表头背景和表身一致，文字更亮，带分割线 */
+[data-theme="dark"] .orders-table {
+  background-color: #1a1a1a; /* 比纯黑稍亮的背景 */
+  border-radius: 8px; /* 可选：添加圆角 */
+  overflow: hidden; /* 确保圆角生效 */
+}
+
+[data-theme="dark"] .orders-table th {
+  background: linear-gradient(
+    to bottom,
+    #2d2d2d,
+    #1f1f1f
+  ); /* 更细腻的深色渐变 */
+  color: #ffffff;
+  font-weight: 500; /* 暗黑模式下稍轻的字重 */
+  border-bottom: 1px solid #3a3a3a;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3); /* 文字阴影增强可读性 */
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+/* 更精致的表头底部高光 */
+[data-theme="dark"] .orders-table th::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.08),
+    transparent
+  );
+}
+
+/* 单元格样式优化 */
+[data-theme="dark"] .orders-table td {
+  border-bottom: 1px solid #2d2d2d;
+  background-color: #1a1a1a;
+}
+
+/* 悬停效果优化 */
+[data-theme="dark"] .orders-table tbody tr:hover {
+  background-color: rgba(59, 130, 246, 0.12);
+  transition: background-color 0.2s ease;
+}
+
+[data-theme="dark"] .orders-table tbody tr:focus-within {
+  background-color: rgba(59, 130, 246, 0.2);
+  outline: 1px dashed var(--color-primary);
+}
+
+/* 按钮交互优化 */
+[data-theme="dark"] .action-btn:hover,
+[data-theme="dark"] .action-btn:focus-visible {
+  background-color: rgba(59, 130, 246, 0.25);
+  box-shadow: 0 0 0 2px var(--color-primary),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+}
+
+/* 表格整体阴影效果 */
+[data-theme="dark"] .orders-table {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
 }
 </style>

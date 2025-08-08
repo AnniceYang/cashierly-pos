@@ -85,7 +85,9 @@
     "action": "Action",
     "view": "View",
     "update": "Update",
-    "notes": "Notes"
+    "notes": "Notes",
+    "orderDetails": "Order Details",
+    "close": "Close"
   },
   "charts": {
     "salesLineTitle": "Sales Trend",
