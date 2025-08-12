@@ -24,6 +24,7 @@
     "orders": "Orders Today",
     "customers": "Active Customers",
     "recentOrders": "Recent Orders",
+    "noOrdersFound": "No orders found.",
     "table": {
       "id": "ID",
       "date": "Date",
@@ -43,7 +44,8 @@
     "statusTooltip": {
       "completed": "Completed",
       "pending": "Pending",
-      "cancelled": "Cancelled"
+      "cancelled": "Cancelled",
+      "processing": "Processing"
     },
     "pagination": {
       "previous": "Previous",
@@ -87,7 +89,9 @@
     "update": "Update",
     "notes": "Notes",
     "orderDetails": "Order Details",
-    "close": "Close"
+    "close": "Close",
+    "cancel": "Cancel",
+    "updateOrder": "Update Order"
   },
   "charts": {
     "salesLineTitle": "Sales Trend",

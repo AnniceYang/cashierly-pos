@@ -54,7 +54,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="o in filteredOrders" :key="o.id" tabindex="0">
+              <tr v-for="o in orders" :key="o.id" tabindex="0">
                 <td>{{ o.id }}</td>
                 <td>{{ o.date }}</td>
                 <td>{{ o.customer }}</td>
@@ -147,6 +147,13 @@
           :order="selectedOrder"
           @close="selectedOrder = null"
         />
+
+        <EditOrderModal
+          v-if="editingOrder"
+          :order="editingOrder"
+          @close="editingOrder = null"
+          @save="saveOrder"
+        />
       </div>
     </div>
   </div>
@@ -159,7 +166,8 @@ import Sidebar from "@/components/layout/Sidebar.vue";
 import Topbar from "@/components/layout/Topbar.vue";
 import { Eye, Edit, Search, ArrowUp, Download } from "lucide-vue-next";
 import OrderDetailModal from "@/components/modals/OrderDetailModal.vue";
-import { debounce } from "lodash-es"; // 如果没装lodash，可以用自己写防抖函数
+import { debounce } from "lodash-es";
+import EditOrderModal from "@/components/modals/EditOrderModal.vue";
 
 const EyeIcon = Eye;
 const EditIcon = Edit;
@@ -169,21 +177,38 @@ const DownloadIcon = Download;
 
 const { t } = useI18n();
 
-const orders = ref([]);
-const filteredOrders = ref([]);
+// ========== 数据 ========== //
+const allOrders = ref([]); // 保存全部订单
+const filteredOrders = ref([]); // 搜索结果（全部）
+const orders = ref([]); // 当前页渲染的数据
 const searchQuery = ref("");
 const showBackTop = ref(false);
 const currentPage = ref(1);
-const selectedOrder = ref(null);
-const pageSize = 10;
 const totalPages = ref(1);
+const pageSize = 10;
+
+const selectedOrder = ref(null);
+const editingOrder = ref(null);
+
+const editOrder = (order) => {
+  editingOrder.value = order;
+};
+
+const saveOrder = (updatedOrder) => {
+  const index = allOrders.value.findIndex((o) => o.id === updatedOrder.id);
+  if (index !== -1) {
+    allOrders.value[index] = updatedOrder;
+    doSearch(); // 更新过滤结果
+  }
+};
 
 const viewDetails = (order) => {
   selectedOrder.value = order;
 };
 
-const generateOrders = (pageNum, pageSize) => {
-  const statuses = ["Completed", "Processing", "Cancelled"];
+// ========== 生成假数据 ========== //
+const generateOrders = (count) => {
+  const statuses = ["Completed", "Processing", "Cancelled", "Pending"];
   const customers = [
     "James Wilson",
     "Sarah Johnson",
@@ -200,8 +225,8 @@ const generateOrders = (pageNum, pageSize) => {
     null,
   ];
 
-  return Array.from({ length: pageSize }, (_, i) => ({
-    id: `ORD-${(pageNum - 1) * pageSize + 1000 + i}`,
+  return Array.from({ length: count }, (_, i) => ({
+    id: `ORD-${1000 + i}`,
     date: new Date(
       Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000
     ).toLocaleDateString("en-US", {
@@ -220,27 +245,44 @@ const generateOrders = (pageNum, pageSize) => {
   }));
 };
 
+// ========== 初始化加载数据 ========== //
 const fetchOrders = () => {
-  const ordersList = generateOrders(currentPage.value, pageSize);
-  orders.value = ordersList;
-  filteredOrders.value = orders.value;
-  totalPages.value = Math.ceil(50 / pageSize);
+  allOrders.value = generateOrders(50); // 一次性生成50条
+  filteredOrders.value = [...allOrders.value];
+  totalPages.value = Math.ceil(filteredOrders.value.length / pageSize);
+  applyPagination();
 };
 
+// ========== 应用分页切片 ========== //
+const applyPagination = () => {
+  const start = (currentPage.value - 1) * pageSize;
+  const end = start + pageSize;
+  orders.value = filteredOrders.value.slice(start, end);
+};
+
+// ========== 搜索逻辑 ========== //
 const doSearch = () => {
-  const query = searchQuery.value.toLowerCase();
-  filteredOrders.value = orders.value.filter(
-    (order) =>
+  const query = searchQuery.value.trim().toLowerCase();
+  filteredOrders.value = allOrders.value.filter((order) => {
+    const orderId = order.id.toLowerCase();
+    const orderIdNumber = orderId.replace(/ord-?/gi, "");
+    return (
       order.customer.toLowerCase().includes(query) ||
-      order.id.toLowerCase().includes(query) ||
+      orderId.includes(query) ||
+      orderIdNumber.includes(query) ||
       (order.notes && order.notes.toLowerCase().includes(query))
-  );
+    );
+  });
+  totalPages.value = Math.ceil(filteredOrders.value.length / pageSize);
+  currentPage.value = 1; // 搜索后回到第一页
+  applyPagination();
 };
 
 const debouncedSearch = debounce(doSearch, 300);
+
+// ========== 导出CSV ========== //
 const escapeCSVField = (field) => {
   if (typeof field === "string" && field.includes(",")) {
-    // 如果字段中有逗号，包双引号，且双引号内的引号需要转义成两个双引号
     return `"${field.replace(/"/g, '""')}"`;
   }
   return field;
@@ -265,7 +307,6 @@ const exportCSV = () => {
     order.notes || "N/A",
   ]);
 
-  // 对每个字段做转义
   const csvContent = [headers, ...rows]
     .map((row) => row.map(escapeCSVField).join(","))
     .join("\n");
@@ -275,15 +316,16 @@ const exportCSV = () => {
 
   const link = document.createElement("a");
   link.href = url;
-  link.setAttribute("download", `orders_page_${currentPage.value}.csv`);
+  link.setAttribute("download", `orders.csv`);
   link.click();
   URL.revokeObjectURL(url);
 };
 
+// ========== 翻页 ========== //
 const changePage = (newPage) => {
   if (newPage >= 1 && newPage <= totalPages.value) {
     currentPage.value = newPage;
-    fetchOrders();
+    applyPagination();
   }
 };
 
@@ -292,18 +334,19 @@ const checkScroll = () => {
   showBackTop.value = el.scrollHeight > el.clientHeight && el.scrollTop > 300;
 };
 
+const scrollTop = () => {
+  document
+    .querySelector(".dashboard-main")
+    .scrollTo({ top: 0, behavior: "smooth" });
+};
+
+// ========== 挂载时执行 ========== //
 onMounted(() => {
   fetchOrders();
   const mainEl = document.querySelector(".dashboard-main");
   mainEl.addEventListener("scroll", checkScroll, { passive: true });
   checkScroll();
 });
-
-const scrollTop = () => {
-  document
-    .querySelector(".dashboard-main")
-    .scrollTo({ top: 0, behavior: "smooth" });
-};
 </script>
 
 <style scoped>
@@ -434,15 +477,37 @@ const scrollTop = () => {
 }
 
 .status-badge.completed {
-  background-color: var(--color-success);
+  background-color: #10b981;
+  color: #fff;
 }
 
 .status-badge.processing {
-  background-color: var(--color-warning);
+  background-color: #f59e0b;
+  color: #fff;
+}
+
+.status-badge.pending {
+  background-color: #6366f1;
+  color: #fff;
 }
 
 .status-badge.cancelled {
-  background-color: var(--color-error);
+  background-color: #ef4444;
+  color: #fff;
+}
+
+/* 暗色模式 */
+[data-theme="dark"] .status-badge.completed {
+  background-color: #34d399;
+}
+[data-theme="dark"] .status-badge.processing {
+  background-color: #fbbf24;
+}
+[data-theme="dark"] .status-badge.pending {
+  background-color: #818cf8;
+}
+[data-theme="dark"] .status-badge.cancelled {
+  background-color: #f87171;
 }
 
 /* Pagination */

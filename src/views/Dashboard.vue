@@ -64,11 +64,6 @@
             role="table"
             aria-describedby="orders-desc"
           >
-            <caption id="orders-desc" class="sr-only">
-              {{
-                t("dashboard.tableCaption")
-              }}
-            </caption>
             <thead>
               <tr>
                 <th scope="col">{{ t("dashboard.table.id") }}</th>

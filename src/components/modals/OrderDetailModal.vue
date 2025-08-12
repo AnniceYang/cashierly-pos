@@ -86,7 +86,8 @@ const closeModal = () => {
 }
 
 .modal-container {
-  background-color: white;
+  background-color: var(--color-bg);
+  color: var(--color-text);
   padding: 24px;
   border-radius: 8px;
   max-width: 600px;
@@ -111,7 +112,7 @@ const closeModal = () => {
   border: none;
   font-size: 1.5rem;
   cursor: pointer;
-  color: #333;
+  color: var(--color-text);
 }
 
 .modal-body {
@@ -127,31 +128,66 @@ const closeModal = () => {
 .order-details-table td {
   padding: 8px;
   text-align: left;
-  border-bottom: 1px solid #ddd;
+  border-bottom: 1px solid var(--color-border);
 }
 
 .order-details-table th {
   font-weight: bold;
 }
-
 .modal-footer {
   display: flex;
   justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
 }
 
-.cancel-btn {
+.cancel-btn,
+.save-btn {
   padding: 8px 16px;
-  background-color: var(--color-primary);
-  color: white;
-  border: none;
   border-radius: 5px;
-  cursor: pointer;
+  border: none;
   font-size: 1rem;
+  cursor: pointer;
+  font-weight: 600;
   transition: background-color 0.3s ease;
 }
 
-.cancel-btn:hover,
-.cancel-btn:focus-visible {
+.cancel-btn {
+  background-color: var(--color-border);
+  color: var(--color-text);
+}
+
+.cancel-btn:hover {
+  background-color: #ccc;
+}
+
+.save-btn {
+  background-color: var(--color-primary);
+  color: white;
+}
+
+.save-btn:hover {
   background-color: var(--color-primary-hover);
+}
+
+/* 暗黑模式适配 */
+[data-theme="dark"] .modal-container {
+  background-color: #1f1f1f;
+}
+
+[data-theme="dark"] .close-btn {
+  color: #fff;
+}
+
+[data-theme="dark"] .cancel-btn {
+  background-color: #3a3a3a;
+  color: #fff;
+  border: 1px solid #555;
+}
+
+[data-theme="dark"] .cancel-btn:hover {
+  background-color: #555;
+  color: #fff;
+  border-color: #777;
 }
 </style>

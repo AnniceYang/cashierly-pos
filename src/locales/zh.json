@@ -25,6 +25,7 @@
     "orders": "今日订单数",
     "customers": "活跃客户",
     "recentOrders": "最近订单",
+    "noOrdersFound": "没有找到订单",
     "table": {
       "id": "ID",
       "date": "日期",
@@ -44,7 +45,8 @@
     "statusTooltip": {
       "completed": "已完成",
       "pending": "待处理",
-      "cancelled": "已取消"
+      "cancelled": "已取消",
+      "processing": "进行中"
     },
     "pagination": {
       "previous": "上一页",
@@ -88,7 +90,9 @@
     "update": "更新",
     "notes": "备注",
     "orderDetails": "订单详情",
-    "close": "关闭"
+    "close": "关闭",
+    "cancel": "取消",
+    "updateOrder": "更新订单"
   },
   "charts": {
     "salesLineTitle": "销售趋势",
