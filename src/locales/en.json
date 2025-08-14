@@ -18,6 +18,15 @@
 
   "dashboard": {
     "orderManagement": "Order Management",
+    "productManagement": "Product Management",
+
+    "productDetails": "Product Details",
+    "addProduct": "Add Product",
+    "editProduct": "Edit Product",
+    "invalidForm": "Please fill all required fields correctly.",
+    "productImage": "Product Image URL",
+    "imageHelpText": "Enter a valid image URL to display product image.",
+
     "title": "Dashboard",
     "welcome": "Welcome back, here’s today’s overview:",
     "sales": "Sales Today",
@@ -25,13 +34,20 @@
     "customers": "Active Customers",
     "recentOrders": "Recent Orders",
     "noOrdersFound": "No orders found.",
+    "noProductsFound": "No products found.",
+    "searchProductPlaceholder": "Search by name or code...",
+
     "table": {
       "id": "ID",
       "date": "Date",
       "customer": "Customer",
       "items": "Items",
       "total": "Total",
-      "status": "Status"
+      "status": "Status",
+      "name": "Name",
+      "category": "Category",
+      "price": "Price",
+      "stock": "Stock"
     },
     "exportCSV": "Export CSV",
     "backToTop": "Back to Top",
@@ -91,7 +107,8 @@
     "orderDetails": "Order Details",
     "close": "Close",
     "cancel": "Cancel",
-    "updateOrder": "Update Order"
+    "updateOrder": "Update Order",
+    "delete": "Delete"
   },
   "charts": {
     "salesLineTitle": "Sales Trend",
@@ -117,6 +134,33 @@
       "completed": "Completed",
       "pending": "Pending",
       "cancelled": "Cancelled"
+    }
+  },
+  "products": {
+    "id": "ID",
+
+    "details": "Product Details",
+    "edit": "Edit Product",
+    "add": "Add Product",
+    "name": "Product Name",
+    "sku": "SKU",
+    "price": "Price",
+    "stock": "Stock",
+    "description": "Description",
+    "category": "Category",
+    "image": "Product Image",
+    "close": "Close",
+    "save": "Save",
+    "cancel": "Cancel",
+    "uploadImage": "Upload Image",
+    "updateImage": "Update Image",
+    "noDescription": "No description available",
+    "currency": "$",
+    "status": {
+      "name": "Status",
+      "outofstock": "OutOfStock",
+      "discontinued": "Discontinued",
+      "available": "Available"
     }
   }
 }

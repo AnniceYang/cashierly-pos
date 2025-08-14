@@ -19,6 +19,15 @@
 
   "dashboard": {
     "orderManagement": "订单管理",
+    "productManagement": "产品管理",
+
+    "productDetails": "产品详情",
+    "addProduct": "添加产品",
+    "editProduct": "编辑产品",
+    "invalidForm": "请正确填写所有必填字段。",
+    "productImage": "产品图片网址",
+    "imageHelpText": "输入有效的图片网址以显示产品图片。",
+
     "title": "仪表盘",
     "welcome": "欢迎回来，以下是今日概览：",
     "sales": "今日销售额",
@@ -26,13 +35,20 @@
     "customers": "活跃客户",
     "recentOrders": "最近订单",
     "noOrdersFound": "没有找到订单",
+    "noProductsFound": "没有找到产品",
+    "searchProductPlaceholder": "按名称或编码搜索...",
+
     "table": {
       "id": "ID",
       "date": "日期",
       "customer": "客户",
       "items": "物品",
       "total": "总金额",
-      "status": "状态"
+      "status": "状态",
+      "name": "名字",
+      "category": "类别",
+      "price": "价格",
+      "stock": "库存"
     },
     "exportCSV": "导出 CSV",
     "backToTop": "返回顶部",
@@ -92,7 +108,8 @@
     "orderDetails": "订单详情",
     "close": "关闭",
     "cancel": "取消",
-    "updateOrder": "更新订单"
+    "updateOrder": "更新订单",
+    "delete": "删除"
   },
   "charts": {
     "salesLineTitle": "销售趋势",
@@ -118,6 +135,33 @@
       "completed": "已完成",
       "pending": "待处理",
       "cancelled": "已取消"
+    }
+  },
+  "products": {
+    "id": "ID",
+
+    "details": "产品详情",
+    "edit": "编辑产品",
+    "add": "添加产品",
+    "name": "产品名称",
+    "sku": "产品编码",
+    "price": "价格",
+    "stock": "库存",
+    "description": "产品描述",
+    "category": "产品类别",
+    "image": "产品图片",
+    "close": "关闭",
+    "save": "保存",
+    "cancel": "取消",
+    "uploadImage": "上传图片",
+    "updateImage": "更新图片",
+    "noDescription": "暂无描述",
+    "currency": "$",
+    "status": {
+      "name": "状态",
+      "outofstock": "缺货",
+      "discontinued": "已停产",
+      "available": "有货"
     }
   }
 }
