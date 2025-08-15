@@ -21,10 +21,18 @@
           </div>
 
           <div class="action-buttons">
-            <button class="add-btn" @click="openAddProduct">
+            <button
+              class="add-btn"
+              @click="openAddProduct"
+              :title="t('products.add')"
+            >
               <PlusIcon size="16" />{{ t("products.add") }}
             </button>
-            <button class="export-btn" @click="exportCSV">
+            <button
+              class="export-btn"
+              @click="exportCSV"
+              :title="t('dashboard.exportCSV')"
+            >
               <DownloadIcon size="16" />{{ t("dashboard.exportCSV") }}
             </button>
           </div>
@@ -49,9 +57,15 @@
             <tr v-for="p in products" :key="p.id">
               <td>{{ p.id }}</td>
               <td>
-                <img :src="getProductImage(p.image)" alt="" class="thumb" />
+                <img
+                  :src="getProductImage(p.image)"
+                  alt=""
+                  class="thumb"
+                  @click="previewImage(p.image)"
+                  :title="t('products.previewImage')"
+                />
               </td>
-              <td>{{ p.name }}</td>
+              <td :title="p.name">{{ p.name }}</td>
               <td>{{ p.category }}</td>
               <td>{{ currencyFormat(p.price) }}</td>
               <td>{{ p.stock }}</td>
@@ -62,10 +76,18 @@
               </td>
 
               <td class="actions-cell">
-                <button @click="viewDetails(p)" class="action-btn">
+                <button
+                  @click="viewDetails(p)"
+                  class="action-btn"
+                  :title="t('common.view')"
+                >
                   <EyeIcon size="16" />{{ t("common.view") }}
                 </button>
-                <button @click="editProduct(p)" class="action-btn">
+                <button
+                  @click="editProduct(p)"
+                  class="action-btn"
+                  :title="t('common.update')"
+                >
                   <EditIcon size="16" />{{ t("common.update") }}
                 </button>
                 <button @click="deleteProduct(p)" class="action-btn danger">
@@ -112,6 +134,7 @@
         <EditProductModal
           v-if="editingProduct"
           :product="editingProduct"
+          :isEdit="isEditing"
           @close="editingProduct = null"
           @save="saveProduct"
         />
@@ -147,6 +170,13 @@ const totalPages = ref(1);
 
 const selectedProduct = ref(null);
 const editingProduct = ref(null);
+
+const isEditing = ref(false);
+
+function editProduct(product) {
+  isEditing.value = true;
+  editingProduct.value = { ...product };
+}
 
 const productImages = import.meta.glob("@/assets/img/*.jpg", {
   eager: true,
@@ -210,11 +240,8 @@ function viewDetails(product) {
   selectedProduct.value = product;
 }
 
-function editProduct(product) {
-  editingProduct.value = { ...product };
-}
-
 function openAddProduct() {
+  isEditing.value = false;
   editingProduct.value = {
     id: `PRD-${1000 + allProducts.value.length}`,
     name: "",
@@ -296,7 +323,7 @@ onMounted(() => {
 /* ===== 布局基础（修复滚动） ===== */
 .dashboard-layout {
   display: flex;
-  height: 100vh; /* 让主容器铺满视口 */
+  min-height: 100vh; /* 改为 min-height 更健壮 */
   background-color: var(--color-bg);
   color: var(--color-text);
 }
@@ -313,6 +340,7 @@ onMounted(() => {
   padding: 24px;
   flex: 1;
   min-height: 0; /* 关键：在 flex 布局中避免高度被撑爆 */
+  background-color: transparent;
 }
 
 /* ===== 标题 ===== */
@@ -411,15 +439,13 @@ onMounted(() => {
   box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
 }
 .action-btn.danger {
-  background-color: rgba(239, 68, 68, 0.12);
-  color: rgb(220, 38, 38);
-  border-color: rgba(239, 68, 68, 0.35);
+  background-color: transparent;
+  color: rgb(239, 68, 68);
+  border: 1px solid rgba(239, 68, 68, 0.4);
 }
 .action-btn.danger:hover {
-  background-color: rgba(239, 68, 68, 0.18);
-  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15);
+  background-color: rgba(239, 68, 68, 0.15);
 }
-
 /* ===== 表格样式 ===== */
 .products-table {
   width: 100%;
@@ -554,135 +580,162 @@ onMounted(() => {
   }
 }
 
-/* ===== 暗黑模式 ===== */ /* ===== 完整暗黑模式适配 ===== */
-[data-theme="dark"] {
-  --color-bg: #121212; /* 页面背景 */
-  --color-card: #1f1f1f; /* 卡片 / 表格背景 */
-  --color-table-header: #2a2a2a; /* 表头 */
-  --color-text: #e5e7eb; /* 主文字 */
-  --color-text-dark: #ffffff; /* 强调文字 */
-  --color-text-secondary: #a1a1aa; /* 次要文字 */
-  --color-border: #333; /* 边框线 */
-  --color-light: #2a2a2a; /* 按钮背景 */
-  --color-primary: #3b82f6; /* 蓝色主色 */
-  --color-primary-hover: #2563eb;
-  --color-primary-light: rgba(59, 130, 246, 0.15); /* hover 背景 */
-  --color-secondary: #475569; /* 导出按钮色 */
-  --color-secondary-hover: #334155;
-  --color-disabled: #4b5563;
-}
+/* ===========================
+   暗黑模式（使用你 Topbar 的全局变量）
+   - 关键点：Topbar 用的是 --color-bg / --color-text / --color-shadow
+   - 这里完全沿用这些变量，保证颜色一致
+   =========================== */
 
-/* 页面容器背景 */
+/* 最重要：让根级的 .dark 或 [data-theme="dark"] 生效到这些组件 */
 [data-theme="dark"] .dashboard-layout,
 [data-theme="dark"] .dashboard-main,
-[data-theme="dark"] .dashboard-content {
-  background-color: var(--color-bg);
-  color: var(--color-text);
+[data-theme="dark"] .dashboard-content,
+.dark .dashboard-layout,
+.dark .dashboard-main,
+.dark .dashboard-content {
+  background-color: var(--color-bg) !important; /* 与 Topbar 一致 */
+  color: var(--color-text) !important;
+  box-shadow: 0 2px 8px var(--color-shadow, rgba(0, 0, 0, 0.4)) !important;
 }
 
-/* 表格 */
-[data-theme="dark"] .products-table {
-  background-color: var(--color-card);
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
+/* 让表格也使用同一背景（和 Topbar 一致）——如果你想表格比外层深一点，可换成 var(--color-card-bg) */
+[data-theme="dark"] .products-table,
+.dark .products-table {
+  background-color: var(--color-bg) !important; /* 与 Topbar 一致 */
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.45);
+  border-radius: 12px;
+  overflow: hidden;
 }
 
-[data-theme="dark"] .products-table thead {
-  background-color: var(--color-table-header);
+/* 表头使用专用变量（如果全局定义了 --color-table-header-bg，会使用它） */
+[data-theme="dark"] .products-table thead,
+.dark .products-table thead {
+  background-color: var(
+    --color-table-header-bg,
+    rgba(255, 255, 255, 0.03)
+  ) !important;
 }
-
 [data-theme="dark"] .products-table th,
-[data-theme="dark"] .products-table td {
-  color: var(--color-text);
-  border-top: 1px solid var(--color-border);
+.dark .products-table th {
+  color: var(--color-table-header-text, var(--color-text)) !important;
+  border-color: var(
+    --color-table-header-border,
+    rgba(255, 255, 255, 0.04)
+  ) !important;
 }
 
-[data-theme="dark"] .products-table tbody tr:hover {
-  background-color: rgba(59, 130, 246, 0.15);
+/* 单元格文字、边框 */
+[data-theme="dark"] .products-table td,
+.dark .products-table td {
+  color: var(--color-text) !important;
+  border-top: 1px solid var(--color-border, rgba(255, 255, 255, 0.04)) !important;
+  background-color: transparent !important; /* 继承外层背景 */
 }
 
-/* 状态标签 */
-[data-theme="dark"] .status-badge.available {
-  background-color: rgba(16, 185, 129, 0.25);
-  color: rgb(5, 150, 105);
-}
-[data-theme="dark"] .status-badge.outofstock {
-  background-color: rgba(239, 68, 68, 0.25);
-  color: rgb(220, 38, 38);
-}
-[data-theme="dark"] .status-badge.discontinued {
-  background-color: rgba(107, 114, 128, 0.25);
-  color: rgb(200, 200, 200);
+/* hover 行使用稍亮的卡片色（如果你定义了 --color-card-bg 会更好看） */
+[data-theme="dark"] .products-table tbody tr:hover td,
+.dark .products-table tbody tr:hover td {
+  background-color: var(--color-card-bg, rgba(255, 255, 255, 0.02)) !important;
 }
 
-/* 搜索框 */
-[data-theme="dark"] .search-input {
-  background-color: #2a2a2a;
-  border-color: #444;
-  color: #e5e7eb;
+/* 搜索框（靠近 topbar 风格） */
+[data-theme="dark"] .search-input,
+.dark .search-input {
+  background-color: var(--color-card-bg, rgba(255, 255, 255, 0.02)) !important;
+  border-color: var(--color-border, rgba(255, 255, 255, 0.04)) !important;
+  color: var(--color-text) !important;
 }
-[data-theme="dark"] .search-input::placeholder {
-  color: #a1a1aa;
+[data-theme="dark"] .search-input::placeholder,
+.dark .search-input::placeholder {
+  color: rgba(255, 255, 255, 0.6) !important;
 }
 
-/* 顶部操作按钮 */
+/* 按钮（主色、次色继承全局变量） */
 [data-theme="dark"] .add-btn,
+.dark .add-btn {
+  background-color: var(--color-primary) !important;
+  color: #fff !important;
+}
+[data-theme="dark"] .add-btn:hover,
+.dark .add-btn:hover {
+  background-color: var(--color-primary-hover) !important;
+}
+
 [data-theme="dark"] .export-btn,
-[data-theme="dark"] .action-btn {
-  color: #fff;
+.dark .export-btn {
+  background-color: var(--color-secondary, #475569) !important;
+  color: #fff !important;
+}
+[data-theme="dark"] .export-btn:hover,
+.dark .export-btn:hover {
+  background-color: var(--color-secondary-hover, #334155) !important;
 }
 
-[data-theme="dark"] .add-btn {
-  background-color: var(--color-primary);
+[data-theme="dark"] .action-btn,
+.dark .action-btn {
+  background-color: var(--color-card-bg, rgba(255, 255, 255, 0.02)) !important;
+  border-color: var(--color-border, rgba(255, 255, 255, 0.04)) !important;
+  color: var(--color-text) !important;
 }
-[data-theme="dark"] .add-btn:hover {
-  background-color: var(--color-primary-hover);
-}
-
-[data-theme="dark"] .export-btn {
-  background-color: var(--color-secondary);
-}
-[data-theme="dark"] .export-btn:hover {
-  background-color: var(--color-secondary-hover);
+[data-theme="dark"] .action-btn:hover,
+.dark .action-btn:hover {
+  background-color: rgba(59, 130, 246, 0.08) !important;
+  color: var(--color-primary) !important;
 }
 
-[data-theme="dark"] .action-btn {
-  background-color: var(--color-light);
-  border-color: #444;
-  color: #e5e7eb;
-}
-[data-theme="dark"] .action-btn:hover {
-  background-color: var(--color-primary-light);
-  color: var(--color-primary);
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
-}
-[data-theme="dark"] .action-btn.danger {
-  background-color: rgba(239, 68, 68, 0.25);
-  color: rgb(220, 38, 38);
-  border-color: rgba(239, 68, 68, 0.4);
+/* danger 按钮 */
+[data-theme="dark"] .action-btn.danger,
+.dark .action-btn.danger {
+  background-color: rgba(239, 68, 68, 0.18) !important;
+  color: var(--color-error, #f87171) !important;
+  border-color: rgba(239, 68, 68, 0.3) !important;
 }
 
 /* 分页 */
-[data-theme="dark"] .pagination button {
-  background-color: #2a2a2a;
-  border-color: #444;
-  color: #e5e7eb;
+[data-theme="dark"] .pagination button,
+.dark .pagination button {
+  background-color: var(--color-card-bg, rgba(255, 255, 255, 0.02)) !important;
+  border-color: var(--color-border, rgba(255, 255, 255, 0.04)) !important;
+  color: var(--color-text) !important;
 }
-[data-theme="dark"] .pagination button:hover:not(:disabled) {
-  background-color: rgba(59, 130, 246, 0.15);
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
-}
-[data-theme="dark"] .pagination button:disabled {
-  background-color: #4b5563;
-  color: #9ca3af;
+[data-theme="dark"] .pagination button:disabled,
+.dark .pagination button:disabled {
+  background-color: var(--color-disabled, rgba(255, 255, 255, 0.03)) !important;
+  color: rgba(255, 255, 255, 0.5) !important;
 }
 
-/* 没有数据提示 */
-[data-theme="dark"] .no-results {
-  color: #a1a1aa;
+/* 无数据提示 */
+[data-theme="dark"] .no-results,
+.dark .no-results {
+  color: rgba(255, 255, 255, 0.65) !important;
 }
 
 /* 图片边框 */
-[data-theme="dark"] .thumb {
-  border: 1px solid #444;
+[data-theme="dark"] .thumb,
+.dark .thumb {
+  border: 1px solid var(--color-border, rgba(255, 255, 255, 0.06)) !important;
+}
+
+/* 小幅调整滚动条在暗色下更明显 */
+[data-theme="dark"] .dashboard-main::-webkit-scrollbar,
+.dark .dashboard-main::-webkit-scrollbar {
+  width: 8px;
+}
+[data-theme="dark"] .dashboard-main::-webkit-scrollbar-thumb,
+.dark .dashboard-main::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 4px;
+}
+
+[data-theme="dark"] .status-badge.discontinued,
+.dark .status-badge.discontinued {
+  background-color: rgba(156, 163, 175, 0.25); /* 更亮灰背景 */
+  color: rgba(229, 231, 235, 0.85); /* 浅灰文字 */
+}
+
+[data-theme="dark"] .action-btn.danger,
+.dark .action-btn.danger {
+  color: #fca5a5;
+  border-color: rgba(239, 68, 68, 0.5);
 }
 </style>

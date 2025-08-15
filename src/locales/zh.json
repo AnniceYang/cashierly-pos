@@ -109,7 +109,9 @@
     "close": "关闭",
     "cancel": "取消",
     "updateOrder": "更新订单",
-    "delete": "删除"
+    "delete": "删除",
+    "save": "保存",
+    "confirmDelete": "确认要删除该产品吗？"
   },
   "charts": {
     "salesLineTitle": "销售趋势",
@@ -155,6 +157,10 @@
     "cancel": "取消",
     "uploadImage": "上传图片",
     "updateImage": "更新图片",
+    "priviewImage": "预览图片",
+    "productSaved": "产品保存成功",
+    "productDeleted": "产品删除成功",
+    "previewImage": "点击预览图片",
     "noDescription": "暂无描述",
     "currency": "$",
     "status": {
