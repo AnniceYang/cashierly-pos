@@ -168,5 +168,23 @@
       "discontinued": "Discontinued",
       "available": "Available"
     }
+  },
+  "customers": {
+    "title": "Customers",
+    "searchPlaceholder": "Search customers",
+    "allStatus": "All Status",
+    "active": "Active",
+    "inactive": "Inactive",
+    "addCustomer": "Add Customer",
+    "editCustomer": "Edit Customer",
+    "table": {
+      "name": "Name",
+      "email": "Email",
+      "phone": "Phone"
+    },
+    "registered": "Registered",
+    "lastActivity": "Last Activity",
+    "status": "Status",
+    "noData": "No customers found"
   }
 }

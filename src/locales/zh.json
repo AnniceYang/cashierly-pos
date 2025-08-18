@@ -169,5 +169,23 @@
       "discontinued": "已停产",
       "available": "有货"
     }
+  },
+  "customers": {
+    "title": "客户管理",
+    "searchPlaceholder": "搜索客户",
+    "allStatus": "全部状态",
+    "active": "活跃",
+    "inactive": "不活跃",
+    "addCustomer": "新增客户",
+    "editCustomer": "编辑客户",
+    "table": {
+      "name": "姓名",
+      "email": "邮箱",
+      "phone": "电话"
+    },
+    "registered": "注册时间",
+    "lastActivity": "最近活跃",
+    "status": "状态",
+    "noData": "暂无客户数据"
   }
 }

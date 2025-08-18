@@ -17,7 +17,9 @@
               :placeholder="t('dashboard.searchProductPlaceholder')"
               @input="debouncedSearch"
               class="search-input"
+              aria-label="Search products"
             />
+            <SearchIcon class="search-icon" aria-hidden="true" />
           </div>
 
           <div class="action-buttons">
@@ -148,7 +150,7 @@ import { ref, onMounted } from "vue";
 import { useI18n } from "vue-i18n";
 import Sidebar from "@/components/layout/Sidebar.vue";
 import Topbar from "@/components/layout/Topbar.vue";
-import { Eye, Edit, Plus, Download } from "lucide-vue-next";
+import { Eye, Edit, Plus, Download, Search } from "lucide-vue-next";
 import ProductDetailModal from "@/components/modals/ProductDetailModal.vue";
 import EditProductModal from "@/components/modals/EditProductModal.vue";
 import { debounce } from "lodash-es";
@@ -159,6 +161,7 @@ const EyeIcon = Eye;
 const EditIcon = Edit;
 const PlusIcon = Plus;
 const DownloadIcon = Download;
+const SearchIcon = Search;
 
 const allProducts = ref([]);
 const filteredProducts = ref([]);
@@ -353,13 +356,15 @@ onMounted(() => {
 /* ===== 顶部工具栏（搜索 + 按钮） ===== */
 .products-header {
   display: flex;
-  flex-wrap: wrap;
   justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
   gap: 12px;
   margin-bottom: 20px;
 }
 
 .search-container {
+  position: relative;
   flex: 1;
   max-width: 360px;
 }
@@ -367,7 +372,7 @@ onMounted(() => {
 .search-input {
   width: 100%;
   height: 40px;
-  padding: 8px 12px;
+  padding: 8px 40px 8px 12px; /* 给右侧图标留出空间 */
   border-radius: 10px;
   border: 1px solid var(--color-border);
   font-size: 0.95rem;
@@ -379,6 +384,16 @@ onMounted(() => {
   outline: none;
   border-color: var(--color-primary);
   box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+.search-icon {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 18px;
+  height: 18px;
+  color: var(--color-text-secondary, #6b7280);
+  pointer-events: none;
 }
 
 /* ===== 按钮样式 ===== */
