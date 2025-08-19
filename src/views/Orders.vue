@@ -477,37 +477,19 @@ onMounted(() => {
 }
 
 .status-badge.completed {
-  background-color: #10b981;
-  color: #fff;
+  background-color: var(--color-success);
 }
 
 .status-badge.processing {
-  background-color: #f59e0b;
-  color: #fff;
+  background-color: var(--color-warning);
 }
 
 .status-badge.pending {
-  background-color: #6366f1;
-  color: #fff;
+  background-color: var(--color-primary);
 }
 
 .status-badge.cancelled {
-  background-color: #ef4444;
-  color: #fff;
-}
-
-/* 暗色模式 */
-[data-theme="dark"] .status-badge.completed {
-  background-color: #34d399;
-}
-[data-theme="dark"] .status-badge.processing {
-  background-color: #fbbf24;
-}
-[data-theme="dark"] .status-badge.pending {
-  background-color: #818cf8;
-}
-[data-theme="dark"] .status-badge.cancelled {
-  background-color: #f87171;
+  background-color: var(--color-error);
 }
 
 /* Pagination */
@@ -582,7 +564,7 @@ onMounted(() => {
   font-weight: 600;
   padding: 6px 12px;
   border-radius: 6px;
-  border: none; /* 去掉默认边框 */
+  border: none;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -666,59 +648,25 @@ onMounted(() => {
   }
 }
 
-/* ========== 暗黑模式支持 ========== */
-:root {
-  --color-bg: #fff;
-  --color-text: #222;
-  --color-text-secondary: #666;
-  --color-text-dark: #333;
-  --color-border: #ddd;
-  --color-primary: #2563eb;
-  --color-primary-hover: #1e40af;
-  --color-success: #16a34a;
-  --color-warning: #d97706;
-  --color-error: #dc2626;
-  --color-text-disabled: #aaa;
-}
-
-[data-theme="dark"] {
-  --color-bg: #121212;
-  --color-text: #e0e0e0;
-  --color-text-secondary: #aaa;
-  --color-text-dark: #ddd;
-  --color-border: #444;
-  --color-primary: #3b82f6;
-  --color-primary-hover: #60a5fa;
-  --color-success: #22c55e;
-  --color-warning: #facc15;
-  --color-error: #ef4444;
-  --color-text-disabled: #555;
-}
-
-/* 表头暗黑调整 */
-/* 暗黑模式表头背景和表身一致，文字更亮，带分割线 */
+/* ========== 暗黑模式优化部分（保留高亮） ========== */
 [data-theme="dark"] .orders-table {
-  background-color: #1a1a1a; /* 比纯黑稍亮的背景 */
-  border-radius: 8px; /* 可选：添加圆角 */
-  overflow: hidden; /* 确保圆角生效 */
+  background-color: #1a1a1a;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
 }
 
 [data-theme="dark"] .orders-table th {
-  background: linear-gradient(
-    to bottom,
-    #2d2d2d,
-    #1f1f1f
-  ); /* 更细腻的深色渐变 */
+  background: linear-gradient(to bottom, #2d2d2d, #1f1f1f);
   color: #ffffff;
-  font-weight: 500; /* 暗黑模式下稍轻的字重 */
+  font-weight: 500;
   border-bottom: 1px solid #3a3a3a;
-  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3); /* 文字阴影增强可读性 */
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
   position: sticky;
   top: 0;
   z-index: 2;
 }
 
-/* 更精致的表头底部高光 */
 [data-theme="dark"] .orders-table th::after {
   content: "";
   position: absolute;
@@ -734,13 +682,11 @@ onMounted(() => {
   );
 }
 
-/* 单元格样式优化 */
 [data-theme="dark"] .orders-table td {
   border-bottom: 1px solid #2d2d2d;
   background-color: #1a1a1a;
 }
 
-/* 悬停效果优化 */
 [data-theme="dark"] .orders-table tbody tr:hover {
   background-color: rgba(59, 130, 246, 0.12);
   transition: background-color 0.2s ease;
@@ -751,16 +697,10 @@ onMounted(() => {
   outline: 1px dashed var(--color-primary);
 }
 
-/* 按钮交互优化 */
 [data-theme="dark"] .action-btn:hover,
 [data-theme="dark"] .action-btn:focus-visible {
   background-color: rgba(59, 130, 246, 0.25);
   box-shadow: 0 0 0 2px var(--color-primary),
     inset 0 0 0 1px rgba(255, 255, 255, 0.1);
-}
-
-/* 表格整体阴影效果 */
-[data-theme="dark"] .orders-table {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
 }
 </style>

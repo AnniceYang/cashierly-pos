@@ -266,8 +266,8 @@ onMounted(() => {
 .dashboard-layout {
   display: flex;
   min-height: 100vh;
-  background-color: #f5f6fa;
-  color: #333;
+  background-color: var(--color-bg);
+  color: var(--color-text);
 }
 .dashboard-main {
   flex: 1;
@@ -285,6 +285,7 @@ onMounted(() => {
   font-size: 1.8rem;
   font-weight: 700;
   margin-bottom: 20px;
+  color: var(--color-text);
 }
 
 /* 顶部工具条 */
@@ -305,21 +306,23 @@ onMounted(() => {
   height: 40px;
   padding: 0 40px 0 12px;
   border-radius: 10px;
-  border: 1px solid #d1d5db;
-  background-color: #fff;
+  border: 1px solid var(--color-border);
+  background-color: var(--color-bg);
+  color: var(--color-text);
 }
 .search-icon {
   position: absolute;
   right: 12px;
   top: 50%;
   transform: translateY(-50%);
-  color: #6b7280;
+  color: var(--color-text-secondary, #888);
 }
 .status-filter select {
   padding: 8px 12px;
-  border-radius: 8px;
-  border: 1px solid #d1d5db;
-  background-color: #fff;
+  border-radius: 10px;
+  border: 1px solid var(--color-border);
+  background-color: var(--color-bg);
+  color: var(--color-text);
 }
 .action-buttons {
   display: flex;
@@ -328,19 +331,29 @@ onMounted(() => {
 .action-buttons button {
   display: flex;
   align-items: center;
-  gap: 4px;
-  padding: 6px 12px;
-  border-radius: 8px;
+  gap: 6px;
+  height: 40px;
+  padding: 0 14px;
+  border-radius: 10px;
   border: none;
   cursor: pointer;
-  font-size: 0.88rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: background-color 0.3s ease;
 }
 .add-btn {
-  background-color: #3b82f6;
+  background-color: var(--color-primary);
   color: #fff;
 }
+.add-btn:hover {
+  background-color: var(--color-primary-hover);
+}
 .export-btn {
-  background-color: #e5e7eb;
+  background-color: var(--color-border);
+  color: var(--color-text);
+}
+.export-btn:hover {
+  background-color: var(--color-shadow);
 }
 
 /* 卡片网格 */
@@ -350,13 +363,15 @@ onMounted(() => {
   gap: 16px;
 }
 .customer-card {
-  background-color: #fff;
+  background-color: var(--color-card-bg);
   border-radius: 12px;
   padding: 16px;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 2px 8px var(--color-shadow);
+  border: 1px solid var(--color-border);
   transition: transform 0.2s;
+  color: var(--color-text);
 }
 .customer-card:hover {
   transform: translateY(-2px);
@@ -370,7 +385,7 @@ onMounted(() => {
 .avatar {
   width: 36px;
   height: 36px;
-  background-color: #3b82f6;
+  background-color: var(--color-primary);
   color: #fff;
   font-weight: 700;
   display: flex;
@@ -380,7 +395,7 @@ onMounted(() => {
 }
 .card-info p {
   font-size: 0.85rem;
-  color: #555;
+  color: var(--color-text-secondary, #666);
   margin: 2px 0;
 }
 .card-status {
@@ -393,17 +408,23 @@ onMounted(() => {
 }
 .action-btn {
   border: none;
-  background-color: #e5e7eb;
+  background-color: var(--color-border);
   padding: 6px 8px;
   border-radius: 6px;
   cursor: pointer;
   display: flex;
   align-items: center;
+  color: var(--color-text);
+}
+.action-btn:hover {
+  background-color: var(--color-shadow);
 }
 .action-btn.danger {
-  background-color: #f87171;
+  background-color: var(--color-error);
   color: #fff;
 }
+
+/* 状态标签 */
 .status-badge {
   padding: 4px 10px;
   border-radius: 999px;
@@ -412,17 +433,18 @@ onMounted(() => {
 }
 .status-badge.available {
   background-color: rgba(16, 185, 129, 0.12);
-  color: rgb(5, 150, 105);
+  color: var(--color-success);
 }
 .status-badge.discontinued {
   background-color: rgba(239, 68, 68, 0.12);
-  color: rgb(185, 28, 28);
+  color: var(--color-error);
 }
+
 .no-results {
   text-align: center;
   padding: 16px;
   font-style: italic;
-  color: #6b7280;
+  color: var(--color-text-secondary, #888);
 }
 
 /* 分页 */
@@ -436,17 +458,23 @@ onMounted(() => {
 .pagination button {
   padding: 8px 12px;
   border-radius: 8px;
-  border: 1px solid #d1d5db;
-  background-color: #f3f4f6;
+  border: 1px solid var(--color-border);
+  background-color: var(--color-bg);
   font-size: 0.88rem;
   cursor: pointer;
+  color: var(--color-text);
+}
+.pagination button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
 }
 .pagination span {
   min-width: 140px;
   text-align: center;
   font-size: 0.9rem;
-  color: #6b7280;
+  color: var(--color-text-secondary, #888);
 }
+
 @media (max-width: 640px) {
   .customer-cards {
     grid-template-columns: 1fr;

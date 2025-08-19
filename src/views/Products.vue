@@ -323,10 +323,10 @@ onMounted(() => {
 </script>
 
 <style scoped>
-/* ===== 布局基础（修复滚动） ===== */
+/* ===== 布局基础 ===== */
 .dashboard-layout {
   display: flex;
-  min-height: 100vh; /* 改为 min-height 更健壮 */
+  min-height: 100vh;
   background-color: var(--color-bg);
   color: var(--color-text);
 }
@@ -335,15 +335,12 @@ onMounted(() => {
   flex: 1;
   display: flex;
   flex-direction: column;
-  min-height: 0; /* 关键 */
-  overflow-y: auto; /* 关键 */
+  overflow-y: auto;
 }
 
 .dashboard-content {
   padding: 24px;
   flex: 1;
-  min-height: 0; /* 关键：在 flex 布局中避免高度被撑爆 */
-  background-color: transparent;
 }
 
 /* ===== 标题 ===== */
@@ -372,31 +369,30 @@ onMounted(() => {
 .search-input {
   width: 100%;
   height: 40px;
-  padding: 8px 40px 8px 12px; /* 给右侧图标留出空间 */
+  padding: 8px 40px 8px 12px;
   border-radius: 10px;
   border: 1px solid var(--color-border);
   font-size: 0.95rem;
-  background-color: var(--color-input-bg, #fff);
+  transition: border-color 0.2s, box-shadow 0.2s, background-color 0.2s;
+  background-color: var(--color-card-bg);
   color: var(--color-text);
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 .search-input:focus {
   outline: none;
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+  box-shadow: 0 0 0 3 rgba(37, 99, 235, 0.15);
 }
+
 .search-icon {
   position: absolute;
   right: 12px;
   top: 50%;
   transform: translateY(-50%);
-  width: 18px;
-  height: 18px;
-  color: var(--color-text-secondary, #6b7280);
   pointer-events: none;
+  color: var(--color-text-secondary, #6b7280);
 }
 
-/* ===== 按钮样式 ===== */
+/* ===== 按钮 ===== */
 .action-buttons {
   display: flex;
   gap: 10px;
@@ -412,11 +408,9 @@ onMounted(() => {
   border-radius: 10px;
   font-weight: 600;
   font-size: 0.9rem;
-  border: none;
   cursor: pointer;
-  transition: transform 0.15s ease, background-color 0.2s ease,
-    box-shadow 0.2s ease;
-  white-space: nowrap;
+  border: none;
+  transition: transform 0.15s, background-color 0.2s, box-shadow 0.2s;
 }
 
 .add-btn {
@@ -427,9 +421,6 @@ onMounted(() => {
   background-color: var(--color-primary-hover);
   transform: translateY(-1px);
 }
-.add-btn:active {
-  transform: translateY(0);
-}
 
 .export-btn {
   background-color: var(--color-secondary, #475569);
@@ -439,58 +430,56 @@ onMounted(() => {
   background-color: var(--color-secondary-hover, #334155);
   transform: translateY(-1px);
 }
-.export-btn:active {
-  transform: translateY(0);
-}
 
 .action-btn {
-  background-color: var(--color-light, #f3f4f6);
   color: var(--color-text);
   border: 1px solid var(--color-border);
 }
 .action-btn:hover {
-  background-color: var(--color-primary-light, rgba(37, 99, 235, 0.08));
+  background-color: rgba(37, 99, 235, 0.08);
   color: var(--color-primary);
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
 }
+
 .action-btn.danger {
   background-color: transparent;
-  color: rgb(239, 68, 68);
+  color: var(--color-error, #ef4444);
   border: 1px solid rgba(239, 68, 68, 0.4);
 }
 .action-btn.danger:hover {
-  background-color: rgba(239, 68, 68, 0.15);
+  background-color: rgba(239, 68, 68, 0.2);
 }
-/* ===== 表格样式 ===== */
+
+/* ===== 表格 ===== */
 .products-table {
   width: 100%;
   border-collapse: collapse;
-  background-color: var(--color-card, #fff);
   border-radius: 12px;
-  overflow: hidden; /* 让圆角生效 */
+  overflow: hidden;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+  background-color: var(--color-card-bg);
 }
 
-.products-table thead {
-  background-color: var(--color-table-header, #f8f9fb);
+.products-table th,
+.products-table td {
+  padding: 12px 14px;
 }
+
 .products-table th {
   text-align: left;
-  padding: 12px 14px;
   font-weight: 700;
-  color: var(--color-text-dark, #222);
   font-size: 0.9rem;
-  letter-spacing: 0.2px;
+  color: var(--color-table-header-text, var(--color-text));
+  background-color: var(--color-table-header-bg, var(--color-card-bg));
+  border-bottom: 2px solid var(--color-table-header-border, var(--color-border));
 }
 
 .products-table td {
-  padding: 12px 14px;
-  border-top: 1px solid var(--color-border);
   font-size: 0.92rem;
+  border-top: 1px solid var(--color-border);
   vertical-align: middle;
 }
 
-.products-table tbody tr:hover {
+.products-table tbody tr:hover td {
   background-color: rgba(37, 99, 235, 0.05);
 }
 
@@ -502,13 +491,12 @@ onMounted(() => {
   border: 1px solid var(--color-border);
 }
 
-/* 状态标签 */
+/* ===== 状态标签 ===== */
 .status-badge {
   padding: 4px 10px;
   border-radius: 999px;
   font-weight: 700;
   font-size: 0.78rem;
-  letter-spacing: 0.2px;
   display: inline-block;
 }
 .status-badge.available {
@@ -524,24 +512,25 @@ onMounted(() => {
   color: rgb(75, 85, 99);
 }
 
+/* ===== 操作单元格 ===== */
 .actions-cell {
   display: flex;
   gap: 8px;
-  flex-wrap: wrap;
+  align-items: center;
 }
 
-/* 没有数据提示 */
+/* ===== 无数据提示 ===== */
 .no-results {
   text-align: center;
   padding: 16px;
-  color: var(--color-text-secondary, #6b7280);
   font-style: italic;
+  color: var(--color-text-secondary, #6b7280);
 }
 
 /* ===== 分页 ===== */
 .pagination {
   display: flex;
-  justify-content: center; /* 居中 */
+  justify-content: center;
   align-items: center;
   gap: 8px;
   margin-top: 16px;
@@ -549,39 +538,22 @@ onMounted(() => {
 
 .pagination button {
   padding: 8px 12px;
-  border: 1px solid var(--color-border);
   border-radius: 8px;
+  border: 1px solid var(--color-border);
   background-color: var(--color-light, #f3f4f6);
   color: var(--color-text);
-  font-size: 0.88rem;
   cursor: pointer;
-  transition: background-color 0.2s ease, box-shadow 0.2s ease;
-}
-.pagination button:hover {
-  background-color: rgba(37, 99, 235, 0.08);
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
 }
 .pagination button:disabled {
+  cursor: not-allowed;
   background-color: var(--color-disabled, #e5e7eb);
   color: #9ca3af;
-  cursor: not-allowed;
-  box-shadow: none;
-}
-.pagination span {
-  min-width: 140px;
-  text-align: center;
-  font-size: 0.9rem;
-  color: var(--color-text-secondary, #6b7280);
 }
 
 /* ===== 响应式 ===== */
 @media (max-width: 960px) {
   .search-container {
     max-width: 100%;
-  }
-  .products-table th,
-  .products-table td {
-    padding: 10px;
   }
 }
 
@@ -595,162 +567,62 @@ onMounted(() => {
   }
 }
 
-/* ===========================
-   暗黑模式（使用你 Topbar 的全局变量）
-   - 关键点：Topbar 用的是 --color-bg / --color-text / --color-shadow
-   - 这里完全沿用这些变量，保证颜色一致
-   =========================== */
-
-/* 最重要：让根级的 .dark 或 [data-theme="dark"] 生效到这些组件 */
-[data-theme="dark"] .dashboard-layout,
-[data-theme="dark"] .dashboard-main,
-[data-theme="dark"] .dashboard-content,
-.dark .dashboard-layout,
-.dark .dashboard-main,
-.dark .dashboard-content {
-  background-color: var(--color-bg) !important; /* 与 Topbar 一致 */
-  color: var(--color-text) !important;
-  box-shadow: 0 2px 8px var(--color-shadow, rgba(0, 0, 0, 0.4)) !important;
-}
-
-/* 让表格也使用同一背景（和 Topbar 一致）——如果你想表格比外层深一点，可换成 var(--color-card-bg) */
-[data-theme="dark"] .products-table,
-.dark .products-table {
-  background-color: var(--color-bg) !important; /* 与 Topbar 一致 */
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.45);
-  border-radius: 12px;
-  overflow: hidden;
-}
-
-/* 表头使用专用变量（如果全局定义了 --color-table-header-bg，会使用它） */
-[data-theme="dark"] .products-table thead,
-.dark .products-table thead {
-  background-color: var(
-    --color-table-header-bg,
-    rgba(255, 255, 255, 0.03)
-  ) !important;
-}
-[data-theme="dark"] .products-table th,
-.dark .products-table th {
-  color: var(--color-table-header-text, var(--color-text)) !important;
-  border-color: var(
-    --color-table-header-border,
-    rgba(255, 255, 255, 0.04)
-  ) !important;
-}
-
-/* 单元格文字、边框 */
-[data-theme="dark"] .products-table td,
-.dark .products-table td {
-  color: var(--color-text) !important;
-  border-top: 1px solid var(--color-border, rgba(255, 255, 255, 0.04)) !important;
-  background-color: transparent !important; /* 继承外层背景 */
-}
-
-/* hover 行使用稍亮的卡片色（如果你定义了 --color-card-bg 会更好看） */
-[data-theme="dark"] .products-table tbody tr:hover td,
-.dark .products-table tbody tr:hover td {
-  background-color: var(--color-card-bg, rgba(255, 255, 255, 0.02)) !important;
-}
-
-/* 搜索框（靠近 topbar 风格） */
+/* ===== 暗黑模式覆盖 ===== */
 [data-theme="dark"] .search-input,
 .dark .search-input {
-  background-color: var(--color-card-bg, rgba(255, 255, 255, 0.02)) !important;
-  border-color: var(--color-border, rgba(255, 255, 255, 0.04)) !important;
-  color: var(--color-text) !important;
+  background-color: var(--color-card-bg);
+  border-color: var(--color-border);
+  color: var(--color-text);
 }
 [data-theme="dark"] .search-input::placeholder,
 .dark .search-input::placeholder {
-  color: rgba(255, 255, 255, 0.6) !important;
+  color: rgba(255, 255, 255, 0.6);
 }
 
-/* 按钮（主色、次色继承全局变量） */
-[data-theme="dark"] .add-btn,
-.dark .add-btn {
-  background-color: var(--color-primary) !important;
-  color: #fff !important;
+[data-theme="dark"] .products-table {
+  background-color: var(--color-card-bg);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.45);
 }
-[data-theme="dark"] .add-btn:hover,
-.dark .add-btn:hover {
-  background-color: var(--color-primary-hover) !important;
+[data-theme="dark"] .products-table th {
+  color: var(--color-table-header-text);
+  background-color: var(--color-table-header-bg);
+  border-bottom: 2px solid var(--color-table-header-border);
 }
-
-[data-theme="dark"] .export-btn,
-.dark .export-btn {
-  background-color: var(--color-secondary, #475569) !important;
-  color: #fff !important;
+[data-theme="dark"] .products-table td {
+  color: var(--color-text);
+  border-top: 1px solid var(--color-border);
 }
-[data-theme="dark"] .export-btn:hover,
-.dark .export-btn:hover {
-  background-color: var(--color-secondary-hover, #334155) !important;
+[data-theme="dark"] .products-table tbody tr:hover td {
+  background-color: rgba(255, 255, 255, 0.08);
 }
 
+/* 暗黑模式状态标签高亮 */
+[data-theme="dark"] .status-badge.outofstock {
+  background-color: rgba(239, 68, 68, 0.25);
+  color: #f87171;
+}
+[data-theme="dark"] .status-badge.discontinued {
+  background-color: rgba(107, 114, 128, 0.2);
+  color: #f3f4f6;
+  border: 1px solid rgba(255, 255, 255, 0.3); /* 浅边框增强可见性 */
+  box-shadow: 0 0 4px rgba(255, 255, 255, 0.15); /* 微光晕 */
+}
+
+/* 暗黑模式操作按钮高亮 */
 [data-theme="dark"] .action-btn,
 .dark .action-btn {
-  background-color: var(--color-card-bg, rgba(255, 255, 255, 0.02)) !important;
-  border-color: var(--color-border, rgba(255, 255, 255, 0.04)) !important;
-  color: var(--color-text) !important;
+  background-color: rgba(255, 255, 255, 0.03);
+  border-color: var(--color-border);
+  color: var(--color-text);
 }
 [data-theme="dark"] .action-btn:hover,
 .dark .action-btn:hover {
-  background-color: rgba(59, 130, 246, 0.08) !important;
-  color: var(--color-primary) !important;
+  background-color: rgba(37, 99, 235, 0.15);
+  color: var(--color-primary);
 }
-
-/* danger 按钮 */
-[data-theme="dark"] .action-btn.danger,
-.dark .action-btn.danger {
-  background-color: rgba(239, 68, 68, 0.18) !important;
-  color: var(--color-error, #f87171) !important;
-  border-color: rgba(239, 68, 68, 0.3) !important;
-}
-
-/* 分页 */
-[data-theme="dark"] .pagination button,
-.dark .pagination button {
-  background-color: var(--color-card-bg, rgba(255, 255, 255, 0.02)) !important;
-  border-color: var(--color-border, rgba(255, 255, 255, 0.04)) !important;
-  color: var(--color-text) !important;
-}
-[data-theme="dark"] .pagination button:disabled,
-.dark .pagination button:disabled {
-  background-color: var(--color-disabled, rgba(255, 255, 255, 0.03)) !important;
-  color: rgba(255, 255, 255, 0.5) !important;
-}
-
-/* 无数据提示 */
-[data-theme="dark"] .no-results,
-.dark .no-results {
-  color: rgba(255, 255, 255, 0.65) !important;
-}
-
-/* 图片边框 */
-[data-theme="dark"] .thumb,
-.dark .thumb {
-  border: 1px solid var(--color-border, rgba(255, 255, 255, 0.06)) !important;
-}
-
-/* 小幅调整滚动条在暗色下更明显 */
-[data-theme="dark"] .dashboard-main::-webkit-scrollbar,
-.dark .dashboard-main::-webkit-scrollbar {
-  width: 8px;
-}
-[data-theme="dark"] .dashboard-main::-webkit-scrollbar-thumb,
-.dark .dashboard-main::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.06);
-  border-radius: 4px;
-}
-
-[data-theme="dark"] .status-badge.discontinued,
-.dark .status-badge.discontinued {
-  background-color: rgba(156, 163, 175, 0.25); /* 更亮灰背景 */
-  color: rgba(229, 231, 235, 0.85); /* 浅灰文字 */
-}
-
-[data-theme="dark"] .action-btn.danger,
-.dark .action-btn.danger {
-  color: #fca5a5;
-  border-color: rgba(239, 68, 68, 0.5);
+[data-theme="dark"] .action-btn.danger:hover,
+.dark .action-btn.danger:hover {
+  background-color: rgba(239, 68, 68, 0.25);
+  color: #f87171;
 }
 </style>

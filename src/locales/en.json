@@ -185,6 +185,8 @@
     "registered": "Registered",
     "lastActivity": "Last Activity",
     "status": "Status",
-    "noData": "No customers found"
+    "noData": "No customers found",
+    "updateSuccess": "Update Successfully",
+    "addSuccess": "Add Successfully"
   }
 }
