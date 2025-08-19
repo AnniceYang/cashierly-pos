@@ -77,7 +77,7 @@
                 </span>
               </td>
 
-              <td class="actions-cell">
+              <td>
                 <button
                   @click="viewDetails(p)"
                   class="action-btn"
