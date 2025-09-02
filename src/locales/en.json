@@ -188,5 +188,26 @@
     "noData": "No customers found",
     "updateSuccess": "Update Successfully",
     "addSuccess": "Add Successfully"
+  },
+  "settings": {
+    "title": "Settings",
+    "account": "Account Information",
+    "username": "Username",
+    "email": "Email",
+    "changePassword": "Change Password",
+    "newPassword": "Enter new password",
+    "passwordChanged": "Password updated successfully",
+    "preferences": "Preferences",
+    "language": "Language",
+    "theme": "Theme",
+    "light": "Light Mode",
+    "dark": "Dark Mode",
+    "langChanged": "Language switched successfully",
+    "security": "Security",
+    "logout": "Logout",
+    "confirmLogout": "Are you sure you want to logout?",
+    "logoutSuccess": "You have logged out successfully",
+    "confirm": "Confirm",
+    "cancel": "Cancel"
   }
 }

@@ -92,7 +92,11 @@
                 >
                   <EditIcon size="16" />{{ t("common.update") }}
                 </button>
-                <button @click="deleteProduct(p)" class="action-btn danger">
+                <button
+                  @click="deleteProduct(p)"
+                  class="action-btn danger"
+                  :title="t('common.delete')"
+                >
                   {{ t("common.delete") }}
                 </button>
               </td>
@@ -392,15 +396,14 @@ onMounted(() => {
   color: var(--color-text-secondary, #6b7280);
 }
 
-/* ===== 按钮 ===== */
+/* ===== 顶部操作按钮（新增、导出） ===== */
 .action-buttons {
   display: flex;
   gap: 10px;
 }
 
 .add-btn,
-.export-btn,
-.action-btn {
+.export-btn {
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -431,22 +434,38 @@ onMounted(() => {
   transform: translateY(-1px);
 }
 
+/* ===== 表格内操作按钮 ===== */
 .action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-right: 6px;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  background-color: transparent; /* 透出行 hover 背景 */
   color: var(--color-text);
   border: 1px solid var(--color-border);
+  transition: background-color 0.2s, color 0.2s, border-color 0.2s;
+}
+.action-btn:last-child {
+  margin-right: 0;
 }
 .action-btn:hover {
   background-color: rgba(37, 99, 235, 0.08);
   color: var(--color-primary);
+  border-color: var(--color-primary);
 }
-
 .action-btn.danger {
-  background-color: transparent;
   color: var(--color-error, #ef4444);
   border: 1px solid rgba(239, 68, 68, 0.4);
 }
 .action-btn.danger:hover {
-  background-color: rgba(239, 68, 68, 0.2);
+  background-color: rgba(239, 68, 68, 0.15);
+  color: var(--color-error, #ef4444);
+  border-color: var(--color-error, #ef4444);
 }
 
 /* ===== 表格 ===== */
@@ -512,13 +531,6 @@ onMounted(() => {
   color: rgb(75, 85, 99);
 }
 
-/* ===== 操作单元格 ===== */
-.actions-cell {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-}
-
 /* ===== 无数据提示 ===== */
 .no-results {
   text-align: center;
@@ -535,7 +547,6 @@ onMounted(() => {
   gap: 8px;
   margin-top: 16px;
 }
-
 .pagination button {
   padding: 8px 12px;
   border-radius: 8px;
@@ -556,7 +567,6 @@ onMounted(() => {
     max-width: 100%;
   }
 }
-
 @media (max-width: 640px) {
   .products-header {
     flex-direction: column;
@@ -604,14 +614,14 @@ onMounted(() => {
 [data-theme="dark"] .status-badge.discontinued {
   background-color: rgba(107, 114, 128, 0.2);
   color: #f3f4f6;
-  border: 1px solid rgba(255, 255, 255, 0.3); /* 浅边框增强可见性 */
-  box-shadow: 0 0 4px rgba(255, 255, 255, 0.15); /* 微光晕 */
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 0 4px rgba(255, 255, 255, 0.15);
 }
 
-/* 暗黑模式操作按钮高亮 */
+/* 暗黑模式操作按钮 */
 [data-theme="dark"] .action-btn,
 .dark .action-btn {
-  background-color: rgba(255, 255, 255, 0.03);
+  background-color: transparent;
   border-color: var(--color-border);
   color: var(--color-text);
 }
@@ -619,10 +629,17 @@ onMounted(() => {
 .dark .action-btn:hover {
   background-color: rgba(37, 99, 235, 0.15);
   color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+[data-theme="dark"] .action-btn.danger,
+.dark .action-btn.danger {
+  color: #f87171;
+  border-color: rgba(248, 113, 113, 0.4);
 }
 [data-theme="dark"] .action-btn.danger:hover,
 .dark .action-btn.danger:hover {
-  background-color: rgba(239, 68, 68, 0.25);
+  background-color: rgba(248, 113, 113, 0.2);
   color: #f87171;
+  border-color: #f87171;
 }
 </style>

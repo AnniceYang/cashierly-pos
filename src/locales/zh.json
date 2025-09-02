@@ -189,5 +189,26 @@
     "noData": "暂无客户数据",
     "updateSuccess": "更新成功",
     "addSuccess": "添加成功"
+  },
+  "settings": {
+    "title": "系统设置",
+    "account": "账号信息",
+    "username": "用户名",
+    "email": "邮箱",
+    "changePassword": "修改密码",
+    "newPassword": "请输入新密码",
+    "passwordChanged": "密码修改成功",
+    "preferences": "偏好设置",
+    "language": "语言",
+    "theme": "主题",
+    "light": "浅色模式",
+    "dark": "深色模式",
+    "langChanged": "语言切换成功",
+    "security": "安全",
+    "logout": "退出登录",
+    "confirmLogout": "确定要退出登录吗？",
+    "logoutSuccess": "您已成功退出登录",
+    "confirm": "确认",
+    "cancel": "取消"
   }
 }
